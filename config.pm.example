@@ -1,0 +1,33 @@
+#! /usr/bin/perl
+package nms::config;
+
+our $eventname = "";
+our $domain = "";
+
+our $pri_hostname = "";
+our $pri_v4 = "";
+
+our $sec_hostname = "";
+our $sec_v4   = "";
+
+our $db_name = "nms";
+our $db_host = $pri_hostname;
+our $db_username = "nms";
+our $db_root_password = "";
+
+our $isc_dhcp_dir = "/etc/dhcp/";
+our $bind9_dir = "/etc/bind9";
+
+our $dhcp_server = $pri_v4;
+
+our $ios_user = "";
+our $ios_pass = "";
+
+our $snmp_community = "";
+
+our $dlink_user = "admin";
+our $dlink_passwd = "";
+
+our $server_nett = ""; #USED IN DHCP 0.0.0.0/mask
+
+our $nett = ""; #used in dns 0.0.0.0/mask;

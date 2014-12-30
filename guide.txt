@@ -1,0 +1,5 @@
+How to SETUP the master server (main NMS, DHCP and master DNS)
+Install apache2 and php5 (lamp-server^)
+Set a good password for mysql
+
+Get the setup script from
