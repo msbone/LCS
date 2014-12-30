@@ -2,7 +2,7 @@
 echo "Making stuff nice"
 
 sudo mkdir -p "/lcs/"
-apt-get -y unzip
+apt-get -y unzip libstring-random-perl
 cd "/lcs"
 echo "Downloading code....."
 wget https://github.com/msbone/lcs/archive/master.zip
