@@ -7,7 +7,6 @@ our $pri_hostname = "";
 our $pri_v4 = "";
 
 our $db_name = "lcs";
-our $db_host = $pri_hostname;
 our $db_username = "lcs";
 our $db_password = ""; #CHANGE THIS AFTER setup_database.pl is run (it will generate it for you)
 our $db_root_password = ""; #REMOVE THIS WHEN setup_database.pl IS DONE!!

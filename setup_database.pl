@@ -14,5 +14,6 @@ $Q3="FLUSH PRIVILEGES;";
 $sql = "$Q1 $Q2 $Q3";
 
 system("mysql -uroot -p$root_password  -e \"$sql\"");
+system("mysql -uroot -p$root_password $db_name < lcs.sql");
 
 print "Created database $db_name with user: $db_user and password: $db_password  UPDATE THE DB_PASSWORD IN THE config.pm AND REMOVE ROOT PASSWORD\n";
