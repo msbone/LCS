@@ -1,9 +1,10 @@
 Lan Config System
 ===
-The system is only tested on Ubuntu 14.04 clean install
+The system is only tested on Ubuntu 14.04.1 clean install
 
-How to setup the master server (main NMS, DHCP and master DNS) <br />
-```Install mysql-server``` <br />
+
+##How to setup the master server (main NMS, DHCP and master DNS) <br />
+Install mysql-server ```apt-get install mysql-server``` <br />
  Set a good password for mysql root user
 
 Get the setup script from https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh  or just run the following command<br />
