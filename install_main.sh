@@ -2,7 +2,7 @@
 echo "Making stuff nice"
 
 sudo mkdir -p "/lcs/"
-apt-get -y unzip libstring-random-perl libnet-netmask-perl
+apt-get -y unzip libstring-random-perl libnet-netmask-perl isc-dhcp-server bind9 lamp-server^
 cd "/lcs"
 echo "Downloading code....."
 wget https://github.com/msbone/lcs/archive/master.zip
