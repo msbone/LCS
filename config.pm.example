@@ -6,6 +6,8 @@ our $domain = "";
 our $pri_hostname = "";
 our $pri_v4 = "";
 
+our $sec_dns_v4 = "8.8.8.8";
+
 our $db_name = "lcs";
 our $db_username = "lcs";
 our $db_password = ""; #CHANGE THIS AFTER setup_database.pl is run (it will generate it for you)

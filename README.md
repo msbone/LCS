@@ -20,3 +20,5 @@ Usage: create_net_range.pl first_ip_base net_size numer_of_networks dhcp name
   Will create 213.184.214.0/25 213.184.214.128/25 213.184.215.0/25 213.184.215.128/25 with dhcp enabled and the names DE-0 DE-1 DE-2 DE-3
 
 NOTICE, there is still no dhcp running. You will have to run the make_dhcp_config.pl first
+
+See also https://github.com/msbone/dlinkac for dlink auto config
