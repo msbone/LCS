@@ -8,7 +8,7 @@ Install mysql-server ```apt-get install mysql-server``` <br />
  Set a good password for mysql root user
 
 Get the setup script from https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh  or just run the following command<br />
-```wget -O - https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh | bash```
+```wget https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh; chmod +x install_main.sh; ./install_main.sh;```
 
 After the script have downloaded the files, fill in the settings at config.pm
 Then run setup_database.pl It should give you an password. Set that password in db_password in config.pm, remove the root password from the file
