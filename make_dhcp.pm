@@ -1,8 +1,13 @@
 #!/usr/bin/perl
 use DBI;
 use Net::Netmask;
+package make_dhcp;
 
 require "config.pm";
+
+sub make_dhcp_config {
+  my $class = shift;
+  my %args = @_;
 
 open (DHCPD, ">$lcs::config::isc_dhcp_dir/dhcpd.conf");
 
@@ -13,8 +18,8 @@ my $date=localtime;
 
 
 $srv_nett = new Net::Netmask ($lcs::config::server_nett);
-$lcs_netmask = $srv_nett->mask();
-$lcs_subnet = $srv_nett->base();
+$srv_netmask = $srv_nett->mask();
+$srv_subnet = $srv_nett->base();
 
 
 $dhcp_conf = <<"EOF";
@@ -33,7 +38,7 @@ key DHCP_UPDATER {
 
 subnet $srv_subnet netmask $srv_netmask {}
 
-  EOF
+EOF
 
   # Connect to the database.
   $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
@@ -74,7 +79,7 @@ subnet $srv_subnet netmask $srv_netmask {}
       authoritative;
       option routers $router;
       option domain-name \"$name.$hostname\";
-      option domain-name \"$name.$hostname\";
+      ddns-domainname  \"$name.$hostname\";
       range $first_ip $last_ip;
       ignore client-updates;
     }
@@ -84,3 +89,5 @@ subnet $srv_subnet netmask $srv_netmask {}
   print DHCPD $dhcp_conf;
   close (DHCPD);
   print "Generated $lcs::config::isc_dhcp_dir/dhcpd.conf\n";
+
+}
