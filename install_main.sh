@@ -22,7 +22,7 @@ mkdir /etc/bind/reverse
 chmod 777 /etc/bind/dynamic
 chmod 777 /etc/bind/reverse
 
-#Lets remove appamor
+#remove appamor
 service apparmor stop
 update-rc.d -f apparmor remove
 apt-get remove apparmor apparmor-utils
