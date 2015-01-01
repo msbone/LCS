@@ -14,11 +14,18 @@ cp config.pm.example config.pm
 
 #Make the hardlink for dns and dhcp key
 ln /etc/bind/rndc.key /etc/dhcp/ddns-keys/rndc.key
+sudo chown root:bind /etc/dhcp/ddns-keys/rndc.key
 
 #Create some folders TEMP, THIS SHOULD BE DONE IN MAKE_DNS.PM NOT HERE
 mkdir /etc/bind/dynamic
 mkdir /etc/bind/reverse
 chmod 777 /etc/bind/dynamic
 chmod 777 /etc/bind/reverse
+
+#Lets remove appamor
+service apparmor stop
+update-rc.d -f apparmor remove
+apt-get remove apparmor apparmor-utils
+#Det her krever en omstart, men vi gir beskjed om det forst etter database er laget
 
 echo "LCS is finished instaling (/lcs/), Fill in the missing info in config.pm then run setup_database.pl"
