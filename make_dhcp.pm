@@ -58,6 +58,8 @@ EOF
   $sth = $dbh->prepare($sql);
   $sth->execute or die "SQL Error: $DBI::errstr\n";
 
+  my @all_rev;
+
   while (my $ref = $sth->fetchrow_hashref()) {
     $network = $ref->{'network'}."/".$ref->{'subnet'};
     $reserved_ips = $ref->{'dhcp_reserved'};
@@ -79,23 +81,36 @@ EOF
 
     $last_ip = $block->nth(-2);
 
-    $dhcp_conf .= "
-    #$ref->{'name'} $desc
+    $base_network_sql = $ref->{'network'};
 
-    zone $name.$hostname {
-      primary 127.0.0.1;
-      key DHCP_UPDATER;
+    my ($t, $s, $p) = (split(/[.!]/, $base_network_sql));
+
+    my $rev_zone = $p.".".$s.".".$t. ".in-addr.arpa";
+
+    $dhcp_conf .= "#$ref->{'name'} $desc
+zone $name.$hostname {
+  primary 127.0.0.1;
+  key rndc-key;
     }
 
-    subnet $subnet  netmask $netmask {
-      authoritative;
-      option routers $router;
-      option domain-name \"$name.$hostname\";
-      ddns-domainname  \"$name.$hostname\";
-      range $first_ip $last_ip;
-      ignore client-updates;
+subnet $subnet  netmask $netmask {
+  authoritative;
+  option routers $router;
+  option domain-name \"$name.$hostname\";
+  ddns-domainname  \"$name.$hostname\";
+  range $first_ip $last_ip;
+  ignore client-updates;
     }
     ";
+
+    unless($rev_zone ~~ @all_rev) {
+      push(@all_rev, $rev_zone);
+      $dhcp_conf .= "
+zone $rev_zone	{
+primary 127.0.0.1; key rndc-key;
+}";
+    }
+
   }
 
   print DHCPD $dhcp_conf;
