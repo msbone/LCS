@@ -7,7 +7,7 @@ $pass = new String::Random;
 
 my $db_name = $lcs::config::db_name;
 my $db_user = $lcs::config::db_username;
-my $db_password = $pass->randpattern("Cn!CnCcC!Ccn");
+my $db_password = $pass->randpattern("CnnCnCcCnCcn");
 my $root_password = $lcs::config::db_root_password;
 
 $Q1="CREATE DATABASE IF NOT EXISTS $db_name;";
