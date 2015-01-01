@@ -9,7 +9,7 @@ sub make_dhcp_config {
   my $class = shift;
   my %args = @_;
 
-open (DHCPD, ">$lcs::config::isc_dhcp_dir/dhcpd.conf");
+open (DHCPD, ">$lcs::config::isc_dhcp_dir/dhcpd.conf") or die "Can't write to file '$lcs::config::isc_dhcp_dir/dhcpd.conf' [$!]\n";
 
 my $dhcp_conf;
 my $hostname = $lcs::config::eventname.".".$lcs::config::domain;
@@ -21,30 +21,32 @@ $srv_nett = new Net::Netmask ($lcs::config::server_nett);
 $srv_netmask = $srv_nett->mask();
 $srv_subnet = $srv_nett->base();
 
+if($lcs::config::unifi_controller_ip ne "") {
+  $unifi_config = "
+  option space ubnt;
+  option ubnt.unifi-address code 1 = ip-address;
+
+  class \"ubnt\" {
+    match if substring (option vendor-class-identifier, 0, 4) = \"ubnt\";
+    option vendor-class-identifier \"ubnt\";
+    vendor-option-space ubnt;
+    option ubnt.unifi-address $lcs::config::unifi_controller_ip;
+  }
+  ";
+}
 
 $dhcp_conf = <<"EOF";
 #MADE WITH make_dhcp.pl at $date\n#DO NOT EDIT MANUAL, YOUR CHANGES WILL BE OVERWRITTEN\n
 option domain-name "$hostname";
-option domain-name-servers $lcs::config::pri_dns_v4 $lcs::config::sec_dns_v4;
+option domain-name-servers $lcs::config::pri_dns_v4, $lcs::config::sec_dns_v4;
 default-lease-time 3600;
 max-lease-time 7200;
 authoritative;
 
 ddns-update-style interim;
-key DHCP_UPDATER {
-  algorithm HMAC-MD5.SIG-ALG.REG.INT;
-  secret $lcs::config::ddns_key;
-}
+include "/etc/dhcp/ddns-keys/rndc.key";
 
-option space ubnt;
-option ubnt.unifi-address code 1 = ip-address;
-
-class "ubnt" {
-  match if substring (option vendor-class-identifier, 0, 4) = "ubnt";
-  option vendor-class-identifier "ubnt";
-  vendor-option-space ubnt;
-  option ubnt.unifi-address $lcs::config::unifi_controller_ip;
-}
+$unifi_config
 
 subnet $srv_subnet netmask $srv_netmask {}
 

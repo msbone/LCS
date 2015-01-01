@@ -21,10 +21,4 @@ system("mysql -uroot -p$root_password $db_name < lcs.sql");
 print "Created database $db_name with user: $db_user and password: $db_password  UPDATE THE DB_PASSWORD IN THE config.pm AND REMOVE ROOT PASSWORD\n";
 
 #Make the hardlink for dns and dhcp key
-system(ln /etc/bind/rndc.key /etc/dhcp/ddns-keys/rndc.key);
-
-#Make the dhcp and dns config so the server will start
-make_dhcp-> make_dhcp_config();
-system("service isc-dhcp-server restart");
-make_dns-> make_dns_config();
-system("service bind9 restart");
+system("ln /etc/bind/rndc.key /etc/dhcp/ddns-keys/rndc.key");

@@ -19,7 +19,7 @@ our $isc_dhcp_dir = "/etc/dhcp/";
 #DNS SETTING
 our $dns_transfer = ""; #0.0.0.0; 0.0.0.0; Automatic add pri and sec server
 our $nett = ""; #used in dns 0.0.0.0/mask;
-our $bind9_dir = "/etc/bind9";
+our $bind9_dir = "/etc/bind/";
 
 #DATABASE
 our $db_name = "lcs";
