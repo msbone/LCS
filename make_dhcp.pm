@@ -36,6 +36,16 @@ key DHCP_UPDATER {
   secret $lcs::config::ddns_key;
 }
 
+option space ubnt;
+option ubnt.unifi-address code 1 = ip-address;
+
+class "ubnt" {
+  match if substring (option vendor-class-identifier, 0, 4) = "ubnt";
+  option vendor-class-identifier "ubnt";
+  vendor-option-space ubnt;
+  option ubnt.unifi-address $lcs::config::unifi_controller_ip;
+}
+
 subnet $srv_subnet netmask $srv_netmask {}
 
 EOF

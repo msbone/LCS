@@ -16,7 +16,7 @@ our $db_root_password = ""; #REMOVE THIS WHEN setup_database.pl IS DONE!!
 our $isc_dhcp_dir = "/etc/dhcp/";
 our $bind9_dir = "/etc/bind9";
 
-our $dhcp_server = $pri_v4;
+our $unifi_controller_ip = "";
 
 our $ios_user = "";
 our $ios_pass = "";

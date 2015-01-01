@@ -3,12 +3,12 @@ Lan Config System
 The system is only tested on Ubuntu 14.04.1 clean install
 
 
-##How to setup the master server (main NMS, DHCP and master DNS) <br />
+####How to setup the master server (main NMS, DHCP and master DNS) <br />
 Install mysql-server ```apt-get install mysql-server``` <br />
  Set a good password for mysql root user
 
 Get the setup script from https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh  or just run the following command<br />
-```wget https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh; chmod +x install_main.sh; ./install_main.sh;```
+```wget https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh; chmod +x install_main.sh; ./install_main.sh; rm install_main.sh;```
 
 After the script have downloaded the files, fill in the settings at config.pm
 Then run setup_database.pl It should give you an password. Set that password in db_password in config.pm, remove the root password from the file
@@ -23,6 +23,6 @@ Usage: create_net_range.pl first_ip_base net_size numer_of_networks dhcp name
   Example: create_net_range.pl 213.184.214.0 25 4 1 DE<br />
   Will create 213.184.214.0/25 213.184.214.128/25 213.184.215.0/25 213.184.215.128/25 with dhcp enabled and the names DE-0 DE-1 DE-2 DE-3
 
-NOTICE, there is still no dhcp running. You will have to run the make_dhcp_config.pl first
+NOTICE, there is still no dhcp running. You will have to run the update_config.pl first, this will create dhcp and update bind9 config
 
 See also https://github.com/msbone/dlinkac for dlink auto config
