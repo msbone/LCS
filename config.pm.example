@@ -1,32 +1,42 @@
 package lcs::config;
 
+#GLOBAL
 our $eventname = "";
 our $domain = "";
 
 our $pri_hostname = "";
 our $pri_v4 = "";
 
-our $sec_dns_v4 = "8.8.8.8";
+our $sec_hostname = "";
+our $sec_v4 = "";
 
+#DHCP SETTING
+our $pri_dns_v4 = $pri_v4;
+our $sec_dns_v4 = "8.8.8.8";
+our $server_nett = ""; #USED IN DHCP 0.0.0.0/mask
+our $isc_dhcp_dir = "/etc/dhcp/";
+
+#DNS SETTING
+our $dns_transfer = ""; #0.0.0.0; 0.0.0.0; Automatic add pri and sec server
+our $nett = ""; #used in dns 0.0.0.0/mask;
+our $bind9_dir = "/etc/bind9";
+
+#DATABASE
 our $db_name = "lcs";
 our $db_username = "lcs";
 our $db_password = ""; #CHANGE THIS AFTER setup_database.pl is run (it will generate it for you)
 our $db_root_password = ""; #REMOVE THIS WHEN setup_database.pl IS DONE!!
 
-our $isc_dhcp_dir = "/etc/dhcp/";
-our $bind9_dir = "/etc/bind9";
 
+#WIFI
 our $unifi_controller_ip = "";
 
+#NETWORK
 our $ios_user = "";
 our $ios_pass = "";
 
 our $snmp_community = "";
 
 our $dlink_user = "admin";
-our $dlink_passwd = "";
-
-our $server_nett = ""; #USED IN DHCP 0.0.0.0/mask
-
-our $nett = ""; #used in dns 0.0.0.0/mask;
+our $dlink_pass = "";
 1;

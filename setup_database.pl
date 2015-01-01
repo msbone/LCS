@@ -1,6 +1,8 @@
 require "config.pm";
 
 use String::Random;
+use make_dhcp;
+use make_dns;
 $pass = new String::Random;
 
 my $db_name = $lcs::config::db_name;
@@ -17,3 +19,9 @@ system("mysql -uroot -p$root_password  -e \"$sql\"");
 system("mysql -uroot -p$root_password $db_name < lcs.sql");
 
 print "Created database $db_name with user: $db_user and password: $db_password  UPDATE THE DB_PASSWORD IN THE config.pm AND REMOVE ROOT PASSWORD\n";
+
+#Make the dhcp config so the server will start
+make_dhcp-> make_dhcp_config();
+system("service isc-dhcp-server restart");
+make_dns-> make_dns_config();
+system("service bind9 restart");

@@ -25,7 +25,7 @@ $srv_subnet = $srv_nett->base();
 $dhcp_conf = <<"EOF";
 #MADE WITH make_dhcp.pl at $date\n#DO NOT EDIT MANUAL, YOUR CHANGES WILL BE OVERWRITTEN\n
 option domain-name "$hostname";
-option domain-name-servers $lcs::config::pri_v4 $lcs::config::sec_dns_v4;
+option domain-name-servers $lcs::config::pri_dns_v4 $lcs::config::sec_dns_v4;
 default-lease-time 3600;
 max-lease-time 7200;
 authoritative;
