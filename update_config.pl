@@ -7,4 +7,4 @@ use make_dns;
 make_dhcp-> make_dhcp_config();
 system("service isc-dhcp-server restart");
 make_dns-> make_dns_config();
-system("service bind9 restart");
+system("service bind9 reload");
