@@ -37,6 +37,6 @@ our $ios_pass = "";
 
 our $snmp_community = "";
 
-our $dlink_user = "admin";
 our $dlink_pass = "";
+our $tftp_ip = "";
 1;
