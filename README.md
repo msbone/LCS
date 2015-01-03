@@ -13,16 +13,16 @@ Get the setup script from https://raw.githubusercontent.com/msbone/LCS/master/in
 After the script have downloaded the files, fill in the settings at config.pm
 Then run setup_database.pl It should give you an password. Set that password in db_password in config.pm, remove the root password from the file
 
-The core system is now running, but without data. Start by adding some networks. The easiest way to do that is just use the create_net.pl or create_net_range.pl
+The core system is now running, but without data. Start by adding some networks. The easiest way to do that is just use the tools/create_net.pl or tools/create_net_range.pl
 
 Usage: create_net.pl ip_base net_size dhcp name
-  Example create_net.pl 213.184.213.0 25 0 Server <br />
+  Example tools/create_net.pl 213.184.213.0 25 0 Server <br />
   Will create 213.184.213.0/25 with dhcp disabled and the name Server
 
 Usage: create_net_range.pl first_ip_base net_size numer_of_networks dhcp name
-  Example: create_net_range.pl 213.184.214.0 25 4 1 DE<br />
+  Example: tools/create_net_range.pl 213.184.214.0 25 4 1 DE<br />
   Will create 213.184.214.0/25 213.184.214.128/25 213.184.215.0/25 213.184.215.128/25 with dhcp enabled and the names DE-0 DE-1 DE-2 DE-3
 
 The config is not created automatic, you will have to run update_config.pl this would also restart/reload the services
 
-See also https://github.com/msbone/dlinkac for dlink auto config
+The dlink system is included in this package under dlinkac

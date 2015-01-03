@@ -1,7 +1,9 @@
 #!/usr/bin/perl -w
+require "include/make_dhcp.pm";
+require "include/make_dns.pm";
+
 use make_dhcp;
 use make_dns;
-
 
 #Make the dhcp and dns config so the server will start
 make_dhcp-> make_dhcp_config();

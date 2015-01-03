@@ -1,4 +1,4 @@
-require "config.pm";
+require "include/config.pm";
 
 use String::Random;
 use make_dhcp;
@@ -16,7 +16,7 @@ $Q3="FLUSH PRIVILEGES;";
 $sql = "$Q1 $Q2 $Q3";
 
 system("mysql -uroot -p$root_password  -e \"$sql\"");
-system("mysql -uroot -p$root_password $db_name < lcs.sql");
+system("mysql -uroot -p$root_password $db_name < include/lcs.sql");
 
 print "Created database $db_name with user: $db_user and password: $db_password \n  UPDATE THE DB_PASSWORD IN THE config.pm AND REMOVE ROOT PASSWORD\n";
 print "THE SERVER NEED A REBOOT TO CONTINUE, PLEASE RESTART ME AFTER YOU HAVE UPDATED config.pm\n";
