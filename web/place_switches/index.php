@@ -1,8 +1,8 @@
 <?php
 //We use some of the salkart logic from sharptickets, this code is licensed for sharptickets.
 ?>
-
-  <link href="seatemap.css" rel="stylesheet" type="text/css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <link href="seatmap.css" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="script.js"></script>
   <script type="text/javascript">
   $(document).ready(function() {
@@ -10,3 +10,4 @@
   });
   </script>
   <div id="salkart"> </div>
+  <div id="sidebar">Trykk eller plasser ut en switch for mer info</div>
