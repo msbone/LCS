@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-require "/lcs/include/ciscoconf.pm";
+use lib '/lcs/include';
 
 use dlink;
 use ciscoconf;

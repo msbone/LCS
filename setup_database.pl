@@ -1,8 +1,6 @@
 require "include/config.pm";
 
 use String::Random;
-use make_dhcp;
-use make_dns;
 $pass = new String::Random;
 
 my $db_name = $lcs::config::db_name;

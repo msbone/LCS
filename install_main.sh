@@ -10,7 +10,9 @@ unzip -u master.zip;
 mv LCS-master/* ./
 rm master.zip
 rm -R LCS-master
-cp config.pm.example config.pm
+
+#make the config.pm
+cp include/config.pm.example include/config.pm
 
 #Make the hardlink for dns and dhcp key
 ln /etc/bind/rndc.key /etc/dhcp/ddns-keys/rndc.key
@@ -40,6 +42,7 @@ sudo service tftpd-hpa restart
 service apparmor stop
 update-rc.d -f apparmor remove
 apt-get -y remove apparmor apparmor-utils
+apt-get -y purge apparmor
 #Det her krever en omstart, men vi gir beskjed om det forst etter database er laget
 
 echo "LCS is finished instaling (/lcs/), Fill in the missing info in config.pm then run setup_database.pl"

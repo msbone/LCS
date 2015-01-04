@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
-require "include/make_dhcp.pm";
-require "include/make_dns.pm";
+use lib '/lcs/include';
 
 use make_dhcp;
 use make_dns;

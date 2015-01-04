@@ -1,6 +1,5 @@
 use Net::Ping;
 use warnings;
-use Net::Telnet;
 package stuff;
 
 sub log {
