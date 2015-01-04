@@ -21,8 +21,8 @@ sudo chown root:bind /etc/dhcp/ddns-keys/rndc.key
 #Create some folders TEMP, THIS SHOULD BE DONE IN MAKE_DNS.PM NOT HERE
 mkdir /etc/bind/dynamic
 mkdir /etc/bind/reverse
-chmod 777 /etc/bind/dynamic
-chmod 777 /etc/bind/reverse
+chmod -R 777 /etc/bind/dynamic
+chmod -R 777 /etc/bind/reverse
 
 #Do dlinkac magic
 sudo chmod -R 777 /lcs/dlinkac/tftp
