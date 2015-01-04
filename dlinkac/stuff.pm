@@ -3,6 +3,21 @@ use warnings;
 use Net::Telnet;
 package stuff;
 
+sub log {
+
+  my $class = shift;
+  my %args = @_;
+
+  $message = $args{ip};;
+
+  my $log_name = 'dlink_log.txt';
+  open(my $log, '>>', $log_name) or die "\n Could not open file '$log_name' $! \n";
+
+  $datestring = strftime "%H:%M:%S %a %e.%b %Y", localtime;
+
+  print $log ."$datestring: $message\n";
+  close $log;
+}
 
 sub ping {
 

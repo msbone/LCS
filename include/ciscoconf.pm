@@ -68,4 +68,15 @@ $session->cmd("exit");
 print $name.": port ". $args{port}. " set to vlan ".$args{vlan}."\n";
 }
 
+sub portstatus {
+  my $self = shift;
+  my %args = @_;
+
+  my @output = $session->cmd("show ip interface brief gigabit 0/$args{port}");
+
+  if (@output[1] =~ /down/) {
+    return 0;
+  }  
+}
+
 1;

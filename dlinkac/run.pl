@@ -11,6 +11,8 @@ my $start_run = time();
 
 require "/lcs/include/config.pm";
 
+stuff->log(message => "started run.pl");
+
 #THE SCRIPT OF ALL SCRIPTS
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
 $sql = "select netlist.subnet, netlist.id AS netid, netlist.vlan, switches.*, coreswitches.name AS distroname, coreswitches.model AS distromodel, coreswitches.ip as distroip from switches JOIN coreswitches, netlist WHERE netlist.id = switches.net_id AND switches.distro_id = coreswitches.id AND switches.model = 'dgs24' AND switches.configured = 0 ORDER BY switches.distro_id";
@@ -19,7 +21,6 @@ $sth = $dbh->prepare($sql);
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 
 while (my $ref = $sth->fetchrow_hashref()) {
-
 
   $distro_name = $ref->{'distroname'};
   $distro_model = $ref->{'distromodel'};
@@ -31,23 +32,30 @@ while (my $ref = $sth->fetchrow_hashref()) {
     my $distro = ciscoconf->connect(ip => $distro_ip,username => $lcs::config::ios_user,password => $lcs::config::ios_pass,hostname => $distro_name, enable_password => $lcs::config::ios_pass);
 
     #NOT SURE ABOUT THE OSPF ROUTING HERE. AS THIS MAY FLAP AND WE WILL HAVE TO WAIT FOR THE OSFP ROUTING UPDATE
+    #THIS SHOULD MAKE IT WAIT FOR THE PORT IS UP, IF THE SWITCH IS ACCTUAL CONNECTED, IF NOT THE PORT WILL NERVER COME UP AND OSPF WIL NOT REDISTUBUTE THE ROUTE
     $distro -> setup_port(port => $connected_port);
-    print "We will start to ping 10.90.90.1 \n";
+    sleep(3);
+    if($distro -> portstatus(port => $connected_port) ==  0) {
+      stuff->log(message => "The port $connected_port on $distro_name is not up");
+      next;
+    }
+    print "We will start to ping the interface on $distro_name \n";
     $respond = stuff->ping(ip => "10.90.90.1",tryes => "120");
 
     if ($respond == 0) {
-      print "\n There is a routing problem on the network 10.90.90.0/24 on the distro $distro_name\n";
-      exit;
+      print "\n The port $connected_port on $distro_name is not up, or there is a routing problem\n";
+      stuff->log(message => "$distro_name is having a routing problem");
+      next;
     }
 
-
     print "We will start to ping 10.90.90.90 \n";
-    $respond = stuff->ping(ip => "10.90.90.90",tryes => "40");
+    $respond = stuff->ping(ip => "10.90.90.90",tryes => "10");
 
     if ($respond == 0)
     {
       print "No able to ping $ref->{'name'}, check that the switch is connected and in default config\n";
-      exit; #TODO make this countinue on the next switch, not full stop
+      stuff->log(message => "No able to ping $ref->{'name'}, check that the switch is connected and in default config");
+      next;
     }
     #DO THE DLINK MAGIC
     $dlink = dlink->connect(ip => "10.90.90.90",username => "admin",password => "admin", name => $ref->{'name'});
@@ -67,7 +75,8 @@ while (my $ref = $sth->fetchrow_hashref()) {
     if ($respond == 0)
     {
       print "No able to ping $ref->{'name'}, the switch is not up after config push \n";
-      exit; #TODO make this countinue on the next switch, not full stop
+      stuff->log(message => "No able to ping $ref->{'name'}, the switch is not up after config push");
+      next;
     }
     print "Switch is back online, we now set password then new IP \n";
     $dlink = dlink->connect(ip => "10.90.90.90",username => "admin",password => "admin", name => $ref->{'name'});
