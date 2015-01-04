@@ -4,7 +4,7 @@ use stuff;
 use Net::Netmask;
 use DBI;
 
-require "/lcs/config.pm";
+require "/lcs/include/config.pm";
 
 #THE SCRIPT OF ALL SCRIPTS
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";

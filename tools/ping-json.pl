@@ -2,7 +2,7 @@
 use DBI;
 use JSON;
 
-require "include/config.pm";
+require "/lcs/include/config.pm";
 
 my %json = ();
 

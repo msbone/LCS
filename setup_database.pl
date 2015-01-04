@@ -1,4 +1,4 @@
-require "include/config.pm";
+require "/lcs/include/config.pm";
 
 use String::Random;
 $pass = new String::Random;

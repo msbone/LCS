@@ -2,7 +2,7 @@
 use DBI;
 use Net::Ping;
 
-require "include/config.pm";
+require "/lcs/include/config.pm";
 
 # Connect to the database.
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";

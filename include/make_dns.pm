@@ -3,7 +3,7 @@ use DBI;
 use Net::Netmask;
 package make_dns;
 
-require "include/config.pm";
+require "/lcs/include/config.pm";
 
 sub make_dns_config {
   my $class = shift;
