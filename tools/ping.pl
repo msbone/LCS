@@ -17,10 +17,10 @@ while (my $ref = $sth->fetchrow_hashref()) {
   my $p=Net::Ping->new('icmp');
   if ($p->ping($ref->{'ip'}, "1")){
     print "Pong $ref->{'ip'} alive \n";
-    $dbh->do("UPDATE `switches` SET  `ping` = 1 WHERE id = '".$ref->{'id'}."'");
+    $dbh->do("UPDATE `switches` SET  `alive` = 1 WHERE id = '".$ref->{'id'}."'");
   } else {
     print "Pong $ref->{'ip'} dead \n";
-    $dbh->do("UPDATE `switches` SET  `ping` = 0 WHERE id = '".$ref->{'id'}."'");
+    $dbh->do("UPDATE `switches` SET  `alive` = 0 WHERE id = '".$ref->{'id'}."'");
   }
 }
 }

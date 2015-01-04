@@ -1,0 +1,96 @@
+/* Ole Mathias AA. Heggem
+Salkart CSS for VatneLAN Høst 2013 */
+#salkart {
+  padding-top: 25px;
+  float: right;
+  width: 500px;
+  background-repeat: no-repeat;
+}
+
+table { border-collapse:collapse; }
+
+.white {
+  background-color: rgb(255,255,255);
+  border: 1px solid rgb(0,0,0);
+  height: 20px;
+  width: 20px;
+}
+
+.kiosk {
+  background-color: #24A7DE;
+  height: 2px;
+  width: 2px;
+}
+
+.red {
+  background-color: rgb(255,0,0);
+  border: 1px solid rgb(0,0,0);
+  height: 20px;
+  width: 20px;
+}
+
+.green {
+  background-color: rgb(0,255,0);
+  border: 1px solid rgb(0,0,0);
+  height: 20px;
+  width: 20px;
+}
+
+.stage {
+  background-color: rgb(153,153,153);
+  height: 20px;
+  width: 20px;
+}
+
+.crew {
+  background-color: rgb(128,128,128);
+  height: 20px;
+  width: 20px;
+}
+
+.empty {
+  height: 20px;
+  width: 20px;
+}
+
+.utgang {
+  background-color: #24A7DE;
+  height: 20px;
+  width: 20px;
+}
+
+.kantswitch {
+  background-color: #24A7DE;
+  height: 20px;
+  width: 20px;
+}
+
+.coreswitch {
+  background-color: #24A7DE;
+  height: 20px;
+  width: 20px;
+}
+
+#tt {
+  position:absolute;
+  display:block;
+}
+#tttop {
+  display:block;
+  height:5px;
+  margin-left:5px;
+  overflow:hidden;
+}
+#ttcont {
+  display:block;
+  padding:2px 12px 3px 7px;
+  margin-left:5px;
+  background:#666;
+  color:#fff;
+}
+#ttbot {
+  display:block;
+  height:5px;
+  margin-left:5px;
+  overflow:hidden;
+}

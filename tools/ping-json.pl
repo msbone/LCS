@@ -14,7 +14,7 @@ $sth = $dbh->prepare($sql);
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 
 while (my $ref = $sth->fetchrow_hashref()) {
-  $json{$ref->{'name'}}{'status'} = $ref->{'ping'};
+  $json{$ref->{'name'}}{'status'} = $ref->{'alive'};
 }
 my $output = encode_json \%json;
 print $output;

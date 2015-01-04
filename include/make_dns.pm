@@ -29,7 +29,7 @@ sub make_dns_config {
   open (MASTER_CONF, ">$lcs::config::bind9_dir/named.master.conf") or die "Can't write to file '$lcs::config::bind9_dir/named.master.conf' [$!]\n";
 
   #La oss lage mapper i bind mappa
-  #TODO Det her ser ikke ut til å fungere, dette blir gjort i install_main.sh nå
+  #TODO Dette her ser ikke ut til å fungere, dette blir gjort i install_main.sh nå
   eval { mkpath("$lcs::config::bind9_dir/dynamic") };
   eval { mkpath("$lcs::config::bind9_dir/reverse") };
 

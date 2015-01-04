@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `switches` (
   `net_id` int(12) DEFAULT NULL,
   `configured` int(1) DEFAULT '0',
   `placement` varchar(12) DEFAULT NULL,
+  `alive` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
