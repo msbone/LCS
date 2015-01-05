@@ -3,7 +3,7 @@ Salkart CSS for VatneLAN Høst 2013 */
 #salkart {
   padding-top: 25px;
   float: left;
-  width: 500px;
+  width: 650px;
   background-repeat: no-repeat;
 }
 
@@ -49,6 +49,7 @@ table { border-collapse:collapse; }
 }
 
 .empty {
+  background-color: rgb(255,255,255);
   height: 20px;
   width: 20px;
 }
@@ -60,13 +61,13 @@ table { border-collapse:collapse; }
 }
 
 .kantswitch {
-  background-color: #24A7DE;
+  background-color: #F7FE2E;
   height: 20px;
   width: 20px;
 }
 
 .coreswitch {
-  background-color: #24A7DE;
+  background-color: #FE9A2E;
   height: 20px;
   width: 20px;
 }

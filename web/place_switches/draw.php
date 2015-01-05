@@ -18,6 +18,17 @@ $result = mysqli_query($con,$sql);
   $switches[$placement[0]][$placement[1]] = $row["id"];
 }
 
+$sql = "SELECT `id`,`placement` FROM `coreswitches` WHERE `placement` IS NOT NULL";
+
+$result = mysqli_query($con,$sql);
+while($row = mysqli_fetch_array($result))
+{
+  #The switch placement is in RAD,SETE
+  $placement = explode("/",$row["placement"]);
+
+  $cores[$placement[0]][$placement[1]] = $row["id"];
+}
+
 ?>
 <!doctype html>
 <html>
@@ -39,90 +50,74 @@ $result = mysqli_query($con,$sql);
 
 <body>
   <?php
+  $x = 0;
+  $y = 0;
+
   echo '<table border="0" cellpadding="0" cellspacing="0">';
-    $ledige = 0;
-    $rad = 0;
-    $plass_rad = 0;
     $lines = explode("z", $map);
     foreach ($lines as $value) {
       echo "<tr>\n";
         //Rad
-        $x = 0;
-        $y = 0;
+
 
         $y++;
-        $rad++;
+        $x = 0;
+
         $new_rad = true;
         $sete = 0;
-        $block[$rad] = str_split($value);
-        foreach ($block[$rad] as $thing) {
-          if($thing == "A") {
-            $plass_rad++;
-            $sete = 0;
+        $block[$y] = str_split($value);
+        foreach ($block[$y] as $thing) {
+
+
+          if(@$cores[$x][$y] != NULL) {
+            $x++;
+            ?>
+            <td id="<?php echo $x.".".$y; ?>" class="coreswitch" onmouseover="tooltip.show('<strong>CORE</strong>');" onmouseout="tooltip.hide();"></td>
+            <?php
           }
 
-          if($thing == "O") {
+          elseif(@$switches[$x][$y] != NULL) {
+            $x++;
+            //Get the switch name and model
+            $switch_id = $switches[$x][$y];
+            $sql = "SELECT `name`,`model`,`distro_id`,`distro_port` FROM `switches` WHERE `id` = $switch_id";
+            $result = mysqli_query($con,$sql);
+            while($row = mysqli_fetch_array($result))
+            {
+              $switch_name = $row["name"];
+              ?>
+              <td id="<?php echo $x.".".$y; ?>" class="kantswitch" onmouseover="tooltip.show('<strong>Switch</strong>');" onmouseout="tooltip.hide();"></td>
+              <?php
+            }
+}
+          elseif($thing == "O") {
+            $x++;
             ?>
-            <td id="<?php echo $plass_rad.".".$sete; ?>" class="empty"> </td>
+            <td id="<?php echo $x.".".$y; ?>" class="white" onmouseover="tooltip.show('<?php echo $x." ".$y; ?>');" onmouseout="tooltip.hide();"> </td>
             <?php
           }
           elseif($thing == "X") {
-            if($new_rad) {
-              $new_rad = false;
-              $plass_rad++;
-            }
-            $sete++;
-            $ledige++;
-            if(@$switches[$plass_rad][$sete] != NULL) {
-              //Get the switch name and model
-              $switch_id = $switches[$plass_rad][$sete];
-              $sql = "SELECT `name`,`model`,`distro_id`,`distro_port` FROM `switches` WHERE `id` = $switch_id";
-              $result = mysqli_query($con,$sql);
-              while($row = mysqli_fetch_array($result))
-              {
-                $switch_name = $row["name"];
-                $switch_model = $row["model"];
-                $switch_port = $row["distro_id"].":".$row["distro_port"];
-              }
-
-              ?>
-              <td id="<?php echo $plass_rad.".".$sete; ?>" class="kantswitch" onmouseover="tooltip.show('<strong><?php echo $switch_name ?></strong> <br /> <?php echo $switch_model."<br /> ".$switch_port; ?> ');" onmouseout="tooltip.hide();"></td>
-              <?php
-            }
-              else {
+            $x++;
             ?>
-            <td id="<?php echo $plass_rad.".".$sete; ?>" class="white"></td>
+            <td id="<?php echo $x.".".$y; ?>" class="white" onmouseover="tooltip.show('<?php echo $x." ".$y; ?>');" onmouseout="tooltip.hide();">X</td>
             <?php
-          }
               }
           elseif($thing == "S") {
+            $x++;
             ?>
-            <td class="stage" onmouseover="tooltip.show('<strong>Scene</strong>');" onmouseout="tooltip.hide();"></td>
-            <?php
-          }
-          elseif($thing == "K") {
-            ?>
-            <td class="kiosk" onmouseover="tooltip.show('<strong>Kiosk</strong>');" onmouseout="tooltip.hide();"></td>
+            <td id="<?php echo $x.".".$y; ?>" class="stage" onmouseover="tooltip.show('<strong>Scene</strong>');" onmouseout="tooltip.hide();"></td>
             <?php
           }
           elseif($thing == "U") {
+            $x++;
             ?>
-            <td class="utgang" onmouseover="tooltip.show('<strong>Inngang/Utgang</strong>');" onmouseout="tooltip.hide();"></td>
+            <td id="<?php echo $x.".".$y; ?>" class="utgang" onmouseover="tooltip.show('<strong>Inngang/Utgang</strong>');" onmouseout="tooltip.hide();"></td>
             <?php
           }
           elseif($thing == "C") {
+            $x++;
             ?>
-            <td class="crew" onmouseover="tooltip.show('<strong>Crew</strong>');" onmouseout="tooltip.hide();"></td>
-            <?php
-          }
-          elseif($thing == "R") {
-            if($new_rad) {
-              $new_rad = false;
-              $plass_rad++;
-            }
-            $sete++;
-            ?>
-            <td id="" class="red" onmouseover="tooltip.show('<strong> Reservert</strong>');" onmouseout="tooltip.hide();"></td>
+            <td id="<?php echo $x.".".$y; ?>" class="crew" onmouseover="tooltip.show('<strong>Crew</strong>');" onmouseout="tooltip.hide();"></td>
             <?php
           }
         }
