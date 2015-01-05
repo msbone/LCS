@@ -47,6 +47,10 @@ $result = mysqli_query($con,$sql);
     foreach ($lines as $value) {
       echo "<tr>\n";
         //Rad
+        $x = 0;
+        $y = 0;
+
+        $y++;
         $rad++;
         $new_rad = true;
         $sete = 0;
@@ -59,7 +63,7 @@ $result = mysqli_query($con,$sql);
 
           if($thing == "O") {
             ?>
-            <td class="empty"> </td>
+            <td id="<?php echo $plass_rad.".".$sete; ?>" class="empty"> </td>
             <?php
           }
           elseif($thing == "X") {
