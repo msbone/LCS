@@ -1,4 +1,7 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <?php
+
+
 session_start();
 include("../database.php");
 
@@ -67,24 +70,81 @@ elseif($switch_found){
 }
 
 else {
-  echo "There is no switch, the make switch comes here <br />";
+  echo "Fill in the name, and the script should take care of the rest <br />";
 
+$closest_core = 0;
+$closest_distance = 1000;
 
+//Calculate the closest core
   $switch_x = $raw_input[0];
   $switch_y = $raw_input[1];
   //Get all the coreswitches with de port set
-  $sql = "SELECT * from coreswitches WHERE de_ports IS NOT NULL";
+  $sql = "SELECT id, placement, name, de_ports from coreswitches WHERE de_ports IS NOT NULL";
 
   $result = mysqli_query($con,$sql);
   while($row = mysqli_fetch_array($result))
   {
+    $raw_ports = explode("-",$row["de_ports"]);
+    for ($x = $raw_ports[0]; $x <= $raw_ports[1]; $x++) {
+      $distro_total_ports[$row["id"]] = $x;
+    }
+
+    $distro_list[$row["id"]] = $row["name"];
      $raw_core_placement = explode("/",$row["placement"]);
      $raw_core_placement_x = $raw_core_placement[0];
      $raw_core_placement_y = $raw_core_placement[1];
      $x_distance = $switch_x - $raw_core_placement_x;
      $y_distance = $switch_y - $raw_core_placement_y;
      $calculated_distance = abs($x_distance) + abs($y_distance);
-     echo $row["name"].": ". $calculated_distance  ."<br />";
+
+     if($closest_distance > $calculated_distance) {
+       $closest_distance = $calculated_distance;
+       $closest_core = $row["id"];
+     }
   }
+  echo $closest_core.": ". $closest_distance  ."<br />";
+
+  ?>
+  <script type="text/javascript">
+  $(document).ready(function() {
+var core1 = [1, 2, 3, 4, 5];
+var core2 = [2, 3, 4, 5];
+
+$( "#distrolist" ).change(function() {
+
+  $('#portlist').empty();
+  $.each(eval("core"+$( "#distrolist" ).val()), function(key, value) {
+    $('#portlist')
+    .append($("<option></option>")
+    .attr("value",key)
+    .text(value));
+  });
+});
+
+});
+
+</script>
+
+  <form>
+    Switch name:<br>
+    <input type="text" name="switchname"><br>
+    Distro:<br>
+    <select id="distrolist" class="distrolist">
+<?php
+foreach($distro_list as $key => $value) {
+  echo "<option value='$key'>$value</option>";
+}
+?>
+    </select><br>
+    Distro_port:<br>
+    <select id="portlist" class="portlist">
+
+    </select><br>
+    Vlan:<br>
+    <input type="text" name="vlan"><br>
+    IP-address:<br>
+    <input type="text" name="ipaddress"><br>
+  </form>
+  <?php
 
 }
