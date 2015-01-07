@@ -107,6 +107,7 @@ $closest_distance = 1000;
   ?>
   <script type="text/javascript">
   $(document).ready(function() {
+
 var core1 = [1, 2, 3, 4, 5];
 var core2 = [2, 3, 4, 5];
 

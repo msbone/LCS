@@ -77,7 +77,7 @@ while($row = mysqli_fetch_array($result))
           }
 
           elseif(@$switches[$x][$y] != NULL) {
-            $x++;
+
             //Get the switch name and model
             $switch_id = $switches[$x][$y];
             $sql = "SELECT `name`,`model`,`distro_id`,`distro_port` FROM `switches` WHERE `id` = $switch_id";
@@ -86,9 +86,10 @@ while($row = mysqli_fetch_array($result))
             {
               $switch_name = $row["name"];
               ?>
-              <td id="<?php echo $x.".".$y; ?>" class="kantswitch" onmouseover="tooltip.show('<strong>Switch</strong>');" onmouseout="tooltip.hide();"></td>
+              <td id="<?php echo $x.".".$y; ?>" class="kantswitch" onmouseover="tooltip.show('<strong><?php echo $switch_name; ?></strong>');" onmouseout="tooltip.hide();"></td>
               <?php
             }
+            $x++;
 }
           elseif($thing == "O") {
             $x++;
