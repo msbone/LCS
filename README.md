@@ -23,6 +23,6 @@ Usage: create_net_range.pl first_ip_base net_size numer_of_networks dhcp name
   Example: tools/create_net_range.pl 213.184.214.0 25 4 1 DE<br />
   Will create 213.184.214.0/25 213.184.214.128/25 213.184.215.0/25 213.184.215.128/25 with dhcp enabled and the names DE-0 DE-1 DE-2 DE-3
 
-The config is not created automatic, you will have to run update_config.pl this would also restart/reload the services
+The dhcp/dns config is not created automatic, you will have to run update_config.pl this would also restart/reload the services
 
 The dlink system is included in this package under dlinkac
