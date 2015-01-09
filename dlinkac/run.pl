@@ -37,10 +37,11 @@ while (my $ref = $sth->fetchrow_hashref()) {
     sleep(3);
     if($distro -> portstatus(port => $connected_port) ==  0) {
       stuff->log(message => "The port $connected_port on $distro_name is not up");
-      next;
+      print "PORT IS NOT UP";
+      exit;
     }
     print "We will start to ping the interface on $distro_name \n";
-    $respond = stuff->ping(ip => "10.90.90.1",tryes => "120");
+    $respond = stuff->ping(ip => "10.90.90.1",tryes => "30");
 
     if ($respond == 0) {
       print "\n The port $connected_port on $distro_name is not up, or there is a routing problem\n";

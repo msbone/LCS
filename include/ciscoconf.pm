@@ -44,6 +44,26 @@ $session->cmd("exit");
 print $name.": port ". $args{port}. " set to CONFIG MODE \n";
 }
 
+sub createvlan_interface {
+  my $self = shift;
+  my %args = @_;
+  #CREATE VLAN
+  #GO TO CONF MODE
+  $session->cmd("conf t");
+  #CREATE VLAN
+  $session->cmd("vlan $args{vlan}");
+  $session->cmd("name $args{name}");
+  $session->cmd("exit");
+  #CREATE THE VLAN INTERFACE
+  $session->cmd("interface vlan $args{vlan}");
+  $session->cmd("no shut");
+  $session->cmd("ip address $args{vlan} $args{subnet}");
+  $session->cmd("desc $args{name}");
+  $session->cmd("ip helper-address $args{helper}");
+  $session->cmd("exit");
+  $session->cmd("exit");
+}
+
 sub setvlan {
 my $self = shift;
 my %args = @_;
@@ -72,11 +92,12 @@ sub portstatus {
   my $self = shift;
   my %args = @_;
 
-  my @output = $session->cmd("show ip interface brief gigabit 0/$args{port}");
+  my @cmd_output = $session->cmd("show ip interface brief gigabit 0/$args{port}");
 
-  if (@output[1] =~ /down/) {
+  if (@cmd_output[1] =~ /down/) {
     return 0;
-  }  
+  }
+  return 1;
 }
 
 1;
