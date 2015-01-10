@@ -37,11 +37,11 @@ while (my $ref = $sth->fetchrow_hashref()) {
     sleep(3);
     if($distro -> portstatus(port => $connected_port) ==  0) {
       stuff->log(message => "The port $connected_port on $distro_name is not up");
-      print "PORT IS NOT UP";
-      exit;
+      print "PORT IS NOT UP, NEXT SWITCH!";
+      next;
     }
     print "We will start to ping the interface on $distro_name \n";
-    $respond = stuff->ping(ip => "10.90.90.1",tryes => "30");
+    $respond = stuff->ping(ip => "10.90.90.1",tryes => "25");
 
     if ($respond == 0) {
       print "\n The port $connected_port on $distro_name is not up, or there is a routing problem\n";
@@ -65,12 +65,12 @@ while (my $ref = $sth->fetchrow_hashref()) {
     #REMEMBER TO EDIT THIS
     sleep(1);
     $dlink->sendConfig(tftp => $lcs::config::tftp_ip,file => "config.bin");
-    sleep(5);
+    sleep(7);
     $dlink->close;
     undef $dlink;
 
     print "The switch should now reboot, lets wait \n";
-    sleep(3);
+    sleep(2);
     $respond = stuff->ping(ip => "10.90.90.90",tryes => "120");
 
     if ($respond == 0)
@@ -126,7 +126,7 @@ $sth->execute or die "SQL Error: $DBI::errstr\n";
 
 while (my $ref = $sth->fetchrow_hashref()) {
   print "We will start to ping $ref->{'name'} \n";
-  $respond = stuff->ping(ip => $ref->{'ip'},tryes => "3");
+  $respond = stuff->ping(ip => $ref->{'ip'},tryes => "8");
 
   if ($respond == 0)
   {
