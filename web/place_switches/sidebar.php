@@ -1,3 +1,16 @@
+<?php
+function netmask2cidr($netmask)
+{
+  $bits = 0;
+  $netmask = explode(".", $netmask);
+
+  foreach($netmask as $octect)
+  $bits += strlen(str_replace("0", "", decbin($octect)));
+
+  return $bits;
+}
+?>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <?php
 
@@ -71,7 +84,8 @@ elseif($switch_found){
 }
 
 else {
-  echo "Fill in the name, and the script should take care of the rest <br />";
+
+  echo "Fill in the name, select a network, then give ip <br />";
 
 $closest_core = 0;
 $closest_distance = 1000;
@@ -104,6 +118,21 @@ $closest_distance = 1000;
      }
   }
   echo $closest_core.": ". $closest_distance  ."<br />";
+
+//Get the vlan from cores
+$sql = "SELECT id, name, network, subnet, coreswitch FROM netlist WHERE coreswitch IS NOT NULL";
+
+
+$result = mysqli_query($con,$sql);
+while($row = mysqli_fetch_array($result))
+{
+  $core_id = $row["coreswitch"];
+  $net_id = $row["id"];
+  $net_name = $row["name"];
+  $net_network = $row["network"]."/".netmask2cidr($row["subnet"]);
+  // ID, NAME (NETWORK)
+    $netlist[$core_id][$net_id] = $net_id. ",".$net_name." ".$net_network;
+}
 
 
 //GET THE PORTS LEFT ON A CORE USING THE SWITCHES TABLE AND WHAT PORTS ARE OPEN TO USE (de_ports)
@@ -156,23 +185,56 @@ foreach ($core as $key => $core_id) {
 }
 ?>
 
+<?php
+foreach ($netlist as $key => $core_id) {
+  echo "var net_core$key = [";
+  $first = true;
+  foreach ($core_id as $vlan) {
+    if($first) {
+      echo "\"$vlan\"";
+      $first = false;
+    }
+    else {
+      echo ", \"$vlan\"";
+    }
+  }
+  echo "]; \n";
+}
+?>
 
+$('#netlist').empty();
+$.each(eval("net_core"+$( "#distrolist" ).val()), function(key, value) {
+  var id_name = value.split(',');
+  $('#netlist')
+  .append($("<option></option>")
+  .attr("value",id_name[0])
+  .text(id_name[1]));
+});
 
 $('#portlist').empty();
 $.each(eval("core"+$( "#distrolist" ).val()), function(key, value) {
   $('#portlist')
   .append($("<option></option>")
-  .attr("value",key)
+  .attr("value",value)
   .text(value));
 });
 
 $( "#distrolist" ).change(function() {
 
+  $('#netlist').empty();
+  $.each(eval("net_core"+$( "#distrolist" ).val()), function(key, value) {
+    var id_name = value.split(',');
+    $('#netlist')
+    .append($("<option></option>")
+    .attr("value",id_name[0])
+    .text(id_name[1]));
+  });
+
   $('#portlist').empty();
   $.each(eval("core"+$( "#distrolist" ).val()), function(key, value) {
     $('#portlist')
     .append($("<option></option>")
-    .attr("value",key)
+    .attr("value",value)
     .text(value));
   });
 });
@@ -181,11 +243,11 @@ $( "#distrolist" ).change(function() {
 
 </script>
 
-  <form>
+<form action="create_switch.php" method="POST">
     Switch name:<br>
     <input type="text" name="switchname"><br>
     Distro:<br>
-    <select id="distrolist" class="distrolist">
+    <select name="distrolist" id="distrolist" class="distrolist">
 <?php
 foreach($distro_list as $key => $value) {
   if($key == $closest_core) {
@@ -197,13 +259,15 @@ foreach($distro_list as $key => $value) {
 ?>
     </select><br>
     Distro_port:<br>
-    <select id="portlist" class="portlist">
-
-    </select><br>
-    Vlan:<br>
-    <input type="text" name="vlan"><br>
+    <select name="portlist" id="portlist" class="portlist"></select><br>
+    Network:<br>
+    <select name="netlist" id="netlist" class="netlist"></select><br>
     IP-address:<br>
     <input type="text" name="ipaddress"><br>
+    Placement:<br>
+    <input type="text" name="placement" value="<?php echo $placement; ?>"><br>
+
+    <input type="submit" id="submit" value="Make switch">
   </form>
   <?php
 

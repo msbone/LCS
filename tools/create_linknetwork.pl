@@ -11,7 +11,7 @@ if ($num_args != 2) {
   #example create_net_range.pl 213.184.214.0 25 4 1 DE
   #Will create 213.184.214.0/25 213.184.214.128/25 213.184.215.0/25 213.184.215.128/25
 
-  print "\nUsage: create_linknetwork.pl first_ip_base numer_of_networks\n";
+  print "\nUsage: create_linknetwork.pl first_ip_base number_of_networks\n";
   print "Example: create_linknetwork.pl 213.184.213.0 5\n";
   exit;
 }

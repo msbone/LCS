@@ -100,34 +100,34 @@ while($row = mysqli_fetch_array($result))
             $x++;
 }
           elseif($thing == "O") {
-            $x++;
             ?>
             <td id="<?php echo $x.".".$y; ?>" class="white" onmouseover="tooltip.show('<?php echo $x." ".$y; ?>');" onmouseout="tooltip.hide();"> </td>
             <?php
+            $x++;
           }
           elseif($thing == "X") {
-            $x++;
             ?>
             <td id="<?php echo $x.".".$y; ?>" class="white" onmouseover="tooltip.show('<?php echo $x." ".$y; ?>');" onmouseout="tooltip.hide();">X</td>
             <?php
+            $x++;
               }
           elseif($thing == "S") {
-            $x++;
             ?>
             <td id="<?php echo $x.".".$y; ?>" class="stage" onmouseover="tooltip.show('<strong>Scene</strong>');" onmouseout="tooltip.hide();"></td>
             <?php
+            $x++;
           }
           elseif($thing == "U") {
-            $x++;
             ?>
             <td id="<?php echo $x.".".$y; ?>" class="utgang" onmouseover="tooltip.show('<strong>Inngang/Utgang</strong>');" onmouseout="tooltip.hide();"></td>
             <?php
+            $x++;
           }
           elseif($thing == "C") {
-            $x++;
             ?>
             <td id="<?php echo $x.".".$y; ?>" class="crew" onmouseover="tooltip.show('<strong>Crew</strong>');" onmouseout="tooltip.hide();"></td>
             <?php
+            $x++;
           }
         }
         echo "</tr>\n";
