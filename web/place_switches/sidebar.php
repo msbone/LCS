@@ -85,7 +85,7 @@ elseif($switch_found){
 
 else {
 
-  echo "Fill in the name, select a network, then give ip <br />";
+  echo "Fill in the name, select a network. DO NOT EDIT IP<br />";
 
 $closest_core = 0;
 $closest_distance = 1000;
@@ -119,6 +119,7 @@ $closest_distance = 1000;
   }
   echo $closest_core.": ". $closest_distance  ."<br />";
 
+
 //Get the vlan from cores
 $sql = "SELECT id, name, network, subnet, coreswitch FROM netlist WHERE coreswitch IS NOT NULL";
 
@@ -131,9 +132,10 @@ while($row = mysqli_fetch_array($result))
   $net_name = $row["name"];
   $net_network = $row["network"]."/".netmask2cidr($row["subnet"]);
   // ID, NAME (NETWORK)
-    $netlist[$core_id][$net_id] = $net_id. ",".$net_name." ".$net_network;
-}
+    $netlist[$core_id][$net_id] = $net_id. ",".$net_name." (".$net_network.")";
 
+    $next_ip[$net_id] = exec("perl get_next_free_ip.pl $net_id");
+}
 
 //GET THE PORTS LEFT ON A CORE USING THE SWITCHES TABLE AND WHAT PORTS ARE OPEN TO USE (de_ports)
 $sql = "SELECT id, de_ports FROM coreswitches WHERE de_ports IS NOT NULL";
@@ -167,8 +169,13 @@ foreach ($core as $key => $core_id) {
   ?>
   <script type="text/javascript">
   $(document).ready(function() {
+  <?php
+    foreach ($next_ip as $key => $network) {
+      echo "var network$key = [";
+      echo "'$network'";
+      echo "]; \n";
+    }
 
-<?php
 foreach ($core as $key => $core_id) {
   echo "var core$key = [";
   $first = true;
@@ -183,9 +190,7 @@ foreach ($core as $key => $core_id) {
   }
   echo "]; \n";
 }
-?>
 
-<?php
 foreach ($netlist as $key => $core_id) {
   echo "var net_core$key = [";
   $first = true;
@@ -219,6 +224,16 @@ $.each(eval("core"+$( "#distrolist" ).val()), function(key, value) {
   .text(value));
 });
 
+$.each(eval("network"+$( "#netlist" ).val()), function(key, value) {
+  $('#ipaddress').val(value);
+});
+
+$( "#netlist" ).change(function() {
+  $.each(eval("network"+$( "#netlist" ).val()), function(key, value) {
+    $('#ipaddress').val(value);
+  });
+});
+
 $( "#distrolist" ).change(function() {
 
   $('#netlist').empty();
@@ -236,6 +251,10 @@ $( "#distrolist" ).change(function() {
     .append($("<option></option>")
     .attr("value",value)
     .text(value));
+  });
+
+  $.each(eval("network"+$( "#netlist" ).val()), function(key, value) {
+    $('#ipaddress').val(value);
   });
 });
 
@@ -263,7 +282,7 @@ foreach($distro_list as $key => $value) {
     Network:<br>
     <select name="netlist" id="netlist" class="netlist"></select><br>
     IP-address:<br>
-    <input type="text" name="ipaddress"><br>
+    <input type="text" id="ipaddress" class="ipaddress" name="ipaddress"><br>
     Placement:<br>
     <input type="text" name="placement" value="<?php echo $placement; ?>"><br>
 
