@@ -13,32 +13,33 @@ $sql = "SELECT switches.distro_id, switches.distro_port, switches.net_id FROM `s
 WHERE switches.placement = '$placement'";
 
 $switch_found = false;
-$distro_set = false;
-$distro_port_set = false;
-$network_set = false;
+$distro_set = true;
+$distro_port_set = true;
+$network_set = true;
 
 $result = mysqli_query($con,$sql);
 while($row = mysqli_fetch_array($result))
 {
   $switch_found = true;
-    if($row["distro_id"] == null or $row["distro_id"] == "") {
+    if($row["distro_id"] == NULL or $row["distro_id"] == "") {
     //Distro not set
-    $distro_set = true;
+    $distro_set = false;
   }
-  elseif ($row["distro_port"] == null or $row["distro_port"] == "") {
+  elseif ($row["distro_port"] == NULL or $row["distro_port"] == "") {
     //Distro port not set
-    $distro_port_set = true;
+    $distro_port_set = false;
   }
-  elseif($row["net_id"] == null or $row["net_id"] == "") {
+  elseif($row["net_id"] == NULL or $row["net_id"] == "") {
     //Network not set
-    $network_set = true;
+    $network_set = false;
   }
 }
 
-if($distro_set and $network_set) {
+if($distro_set && $network_set && $switch_found) {
 $sql = "SELECT switches.name, switches.distro_port, switches.model, switches.ip, switches.configured, switches.alive,
 coreswitches.name AS corename, netlist.name AS netname, netlist.vlan FROM `switches` JOIN `coreswitches`, `netlist`
 WHERE switches.placement = '$placement' AND switches.net_id = netlist.id AND switches.distro_id = coreswitches.id";
+
 
 $result = mysqli_query($con,$sql);
 while($row = mysqli_fetch_array($result))
@@ -104,12 +105,66 @@ $closest_distance = 1000;
   }
   echo $closest_core.": ". $closest_distance  ."<br />";
 
+
+//GET THE PORTS LEFT ON A CORE USING THE SWITCHES TABLE AND WHAT PORTS ARE OPEN TO USE (de_ports)
+$sql = "SELECT id, de_ports FROM coreswitches WHERE de_ports IS NOT NULL";
+
+$result = mysqli_query($con,$sql);
+while($row = mysqli_fetch_array($result))
+{
+  //First get the de ports and make a while loop (split on -) (create an array with all useable ports)
+  $port_range = explode("-",$row["de_ports"]);
+$core_id = $row["id"];
+
+  for ($x = $port_range[0]; $x <= $port_range[1]; $x++) {
+    $core[$core_id][$x] = $x;
+  }
+}
+
+//Then get all the switches that are connected to that core
+foreach ($core as $key => $core_id) {
+  $sql = "SELECT id, distro_port FROM switches WHERE distro_id = $key AND distro_port IS NOT NULL";
+  $result = mysqli_query($con,$sql);
+  while($row = mysqli_fetch_array($result))
+  {
+    //Get the port they are connected on and remove it from the array created in first step
+    $distro_port = $row["distro_port"];
+    unset($core[$key][$distro_port]);
+  }
+
+}
+
+
   ?>
   <script type="text/javascript">
   $(document).ready(function() {
 
-var core1 = [1, 2, 3, 4, 5];
-var core2 = [2, 3, 4, 5];
+<?php
+foreach ($core as $key => $core_id) {
+  echo "var core$key = [";
+  $first = true;
+  foreach ($core_id as $ports) {
+    if($first) {
+      echo "$ports";
+      $first = false;
+    }
+    else {
+      echo ", $ports";
+    }
+  }
+  echo "]; \n";
+}
+?>
+
+
+
+$('#portlist').empty();
+$.each(eval("core"+$( "#distrolist" ).val()), function(key, value) {
+  $('#portlist')
+  .append($("<option></option>")
+  .attr("value",key)
+  .text(value));
+});
 
 $( "#distrolist" ).change(function() {
 
@@ -133,7 +188,11 @@ $( "#distrolist" ).change(function() {
     <select id="distrolist" class="distrolist">
 <?php
 foreach($distro_list as $key => $value) {
+  if($key == $closest_core) {
+  echo "<option selected='selected' value='$key'>$value</option>";
+}else {
   echo "<option value='$key'>$value</option>";
+}
 }
 ?>
     </select><br>

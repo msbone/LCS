@@ -70,10 +70,18 @@ while($row = mysqli_fetch_array($result))
 
 
           if(@$cores[$x][$y] != NULL) {
+            //Get the switch name and model
+            $core_id = $cores[$x][$y];
+            $sql = "SELECT `name` FROM `coreswitches` WHERE `id` = $core_id";
+            $result = mysqli_query($con,$sql);
+            while($row = mysqli_fetch_array($result))
+            {
+              $core_name = $row["name"];
+              ?>
+              <td id="<?php echo $x.".".$y; ?>" class="coreswitch" onmouseover="tooltip.show('<strong><?php echo $core_name; ?></strong>');" onmouseout="tooltip.hide();"></td>
+              <?php
+            }
             $x++;
-            ?>
-            <td id="<?php echo $x.".".$y; ?>" class="coreswitch" onmouseover="tooltip.show('<strong>CORE</strong>');" onmouseout="tooltip.hide();"></td>
-            <?php
           }
 
           elseif(@$switches[$x][$y] != NULL) {
