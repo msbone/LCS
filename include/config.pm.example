@@ -38,5 +38,5 @@ our $ios_pass = "";
 our $snmp_community = "";
 
 our $dlink_pass = "";
-our $tftp_ip = "";
+our $tftp_ip = $pri_v4;
 1;

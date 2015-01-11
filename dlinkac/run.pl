@@ -41,7 +41,7 @@ while (my $ref = $sth->fetchrow_hashref()) {
       next;
     }
     print "We will start to ping the interface on $distro_name \n";
-    $respond = stuff->ping(ip => "10.90.90.1",tryes => "25");
+    $respond = stuff->ping(ip => "10.90.90.1",tryes => "35");
 
     if ($respond == 0) {
       print "\n The port $connected_port on $distro_name is not up, or there is a routing problem\n";
@@ -50,7 +50,7 @@ while (my $ref = $sth->fetchrow_hashref()) {
     }
 
     print "We will start to ping 10.90.90.90 \n";
-    $respond = stuff->ping(ip => "10.90.90.90",tryes => "10");
+    $respond = stuff->ping(ip => "10.90.90.90",tryes => "5");
 
     if ($respond == 0)
     {
@@ -94,6 +94,9 @@ while (my $ref = $sth->fetchrow_hashref()) {
   }
 }
 
+  print "We will wait 1 minute \n";
+  sleep(60);
+
 #The switches is now done with is job, lets check that the switches acctual have got their IP befor we give it green light
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 
@@ -118,7 +121,7 @@ while (my $ref = $sth->fetchrow_hashref()) {
 }
 
 #Lets save the config on all success switches
-print "Starting to save config on success switches";
+print "Starting to save config on success switches \n";
 $sql = "select * from switches WHERE model = 'dgs24' AND configured = 1";
 
 $sth = $dbh->prepare($sql);
@@ -142,4 +145,4 @@ while (my $ref = $sth->fetchrow_hashref()) {
 my $end_run = time();
 my $run_time = $end_run - $start_run;
 
-print "\nConfig done for $switches switches in $run_time secounds \n $failed switches failed";
+print "\nConfig done for $switches switches in $run_time sec \n $failed switches failed \n";
