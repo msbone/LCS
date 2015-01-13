@@ -1,6 +1,5 @@
 use Net::Ping;
 use warnings;
-use POSIX qw(strftime);
 package stuff;
 
 sub log {
@@ -8,14 +7,14 @@ sub log {
   my $class = shift;
   my %args = @_;
 
-  $message = $args{ip};;
+  $message = $args{message};;
 
   my $log_name = 'dlink_log.txt';
   open(my $log, '>>', $log_name) or die "\n Could not open file '$log_name' $! \n";
 
-  #$datestring = strftime "%H:%M:%S %a %e.%b %Y", localtime;
+  $datestring = localtime;
 
-  print $log ."$message\n";
+  print $log $datestring.": $message\n";
   close $log;
 }
 

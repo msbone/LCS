@@ -29,14 +29,15 @@ while (my $ref = $sth->fetchrow_hashref()) {
   $connected_port = $ref->{'distro_port'};
 
   if($distro_model eq "3560g") {
+    stuff->log(message => "Starting magic on $ref->{'name'}");
     my $distro = ciscoconf->connect(ip => $distro_ip,username => $lcs::config::ios_user,password => $lcs::config::ios_pass,hostname => $distro_name, enable_password => $lcs::config::ios_pass);
-
-    #NOT SURE ABOUT THE OSPF ROUTING HERE. AS THIS MAY FLAP AND WE WILL HAVE TO WAIT FOR THE OSFP ROUTING UPDATE
-    #THIS SHOULD MAKE IT WAIT FOR THE PORT IS UP, IF THE SWITCH IS ACCTUAL CONNECTED, IF NOT THE PORT WILL NERVER COME UP AND OSPF WIL NOT REDISTUBUTE THE ROUTE
+    stuff->log(message => "Connected to $distro_name");
+    #THIS SHOULD MAKE IT WAIT FOR THE PORT IS UP, IF THE SWITCH IS ACCTUAL CONNECTED, IF NOT THE PORT IS UP OSPF WILL NOT REDISTUBUTE THE ROUTE
     $distro -> setup_port(port => $connected_port);
+    stuff->log(message => "Port $connected_port on $distro_name setup in config mode");
     sleep(3);
     if($distro -> portstatus(port => $connected_port) ==  0) {
-      stuff->log(message => "The port $connected_port on $distro_name is not up");
+      stuff->log(message => "The port $connected_port on $distro_name is not up. Switch $ref->{'name'}");
       print "PORT IS NOT UP, NEXT SWITCH!";
       next;
     }
@@ -48,7 +49,7 @@ while (my $ref = $sth->fetchrow_hashref()) {
       stuff->log(message => "$distro_name is having a routing problem");
       next;
     }
-
+    stuff->log(message => "We will start to ping 10.90.90.90");
     print "We will start to ping 10.90.90.90 \n";
     $respond = stuff->ping(ip => "10.90.90.90",tryes => "5");
 
@@ -60,16 +61,19 @@ while (my $ref = $sth->fetchrow_hashref()) {
     }
     #DO THE DLINK MAGIC
     $dlink = dlink->connect(ip => "10.90.90.90",username => "admin",password => "admin", name => $ref->{'name'});
+    stuff->log(message => "Connected to $ref->{'name'}");
     sleep(1);
     $dlink->setIP(ip => "10.90.90.90", gateway => "10.90.90.1", subnetmask => "255.255.255.0");
     #REMEMBER TO EDIT THIS
     sleep(1);
     $dlink->sendConfig(tftp => $lcs::config::tftp_ip,file => "config.bin");
+    stuff->log(message => "Sending config to $ref->{'name'} from $lcs::config::tftp_ip");
     sleep(7);
     $dlink->close;
     undef $dlink;
 
     print "The switch should now reboot, lets wait \n";
+    stuff->log(message => "$ref->{'name'} is now rebooting");
     sleep(2);
     $respond = stuff->ping(ip => "10.90.90.90",tryes => "120");
 
@@ -80,6 +84,7 @@ while (my $ref = $sth->fetchrow_hashref()) {
       next;
     }
     print "Switch is back online, we now set password then new IP \n";
+    stuff->log(message => "$ref->{'name'} is back online, we now set password then new IP");
     $dlink = dlink->connect(ip => "10.90.90.90",username => "admin",password => "admin", name => $ref->{'name'});
     $dlink->setPassword(password => $lcs::config::dlink_pass);
     sleep(5);
@@ -88,9 +93,12 @@ while (my $ref = $sth->fetchrow_hashref()) {
     $dlink->setIP(ip => $ref->{'ip'}, gateway => $block->nth(1), subnetmask => $block->mask());
     sleep(5);
     $dlink->close;
-
+    stuff->log(message => "$ref->{'name'} do now have correct ip and password");
     $distro -> setvlan(port => $connected_port,vlan => $ref->{'vlan'}, desc => $ref->{'name'});
     undef $distro;
+    stuff->log(message => "$connected_port is not set to vlan $ref->{'vlan'} for the switch $ref->{'name'}");
+  }else {
+    stuff->log(message => "The core on switch $ref->{'name'} is not a cisco 3560G, WE SKIP");
   }
 }
 
@@ -146,3 +154,5 @@ my $end_run = time();
 my $run_time = $end_run - $start_run;
 
 print "\nConfig done for $switches switches in $run_time sec \n $failed switches failed \n";
+stuff->log(message => "$failed switches failed");
+stuff->log(message => "Config done for $switches switches in $run_time sec");
