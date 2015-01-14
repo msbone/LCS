@@ -1,4 +1,7 @@
 #!/usr/bin/perl -w
+
+#This script is not using the coolest features from run.pl
+
 use lib '/lcs/include';
 
 use dlink;

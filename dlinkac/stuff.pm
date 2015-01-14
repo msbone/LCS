@@ -7,14 +7,20 @@ sub log {
   my $class = shift;
   my %args = @_;
 
-  $message = $args{message};;
+  $message = $args{message};
+  $switch = $args{switch};
 
   my $log_name = 'dlink_log.txt';
   open(my $log, '>>', $log_name) or die "\n Could not open file '$log_name' $! \n";
 
   $datestring = localtime;
 
+if($switch eq "") {
   print $log $datestring.": $message\n";
+}
+else {
+  print $log $datestring.":$switch: $message\n";
+}
   close $log;
 }
 
