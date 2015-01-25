@@ -185,3 +185,7 @@ $rev_zone.    IN	NS  $sec_srv.$hostname.
   close (MASTER_CONF);
 
 }
+
+sub make_sec_dns_config {
+
+}

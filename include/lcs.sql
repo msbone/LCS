@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `netlist` (
   `coreswitch` int(12) NOT NULL,
   `dhcp` int(1) DEFAULT '0',
   `dhcp_reserved` varchar(12) DEFAULT '0',
-  `dhcp_used` int(12) DEFAULT '0',
+  `last_dhcp_request` int(12) DEFAULT '0',
   `desc` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)

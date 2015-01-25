@@ -47,3 +47,4 @@ web/.idea/scopes/scope_settings.xml
 .remote-sync.json
 .bin
 /include/config.pm
+/dlinkac/dlink_log.txt
