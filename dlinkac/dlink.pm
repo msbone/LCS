@@ -48,6 +48,19 @@ my %args = @_;
 $t->cmd("save");
 }
 
+sub getHWversion {
+  my $self = shift;
+  my %args = @_;
+  my @show_switch = $t->cmd("show switch");
+
+  if ($show_switch[5] =~ /C1/) {
+    return "C1";
+  }
+  if ($show_switch[5] =~ /B1/) {
+    return "B1";
+  }
+}
+
 sub cmd {
 my $self = shift;
 my %args = @_;

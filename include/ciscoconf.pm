@@ -30,6 +30,7 @@ my %args = @_;
 $session->cmd("clear arp-cache");
 #GO TO CONF MODE FOR THIS PORT
 $session->cmd("conf t");
+$session->cmd("default interface gigabit 0/".$args{port});
 $session->cmd("interface gigabit 0/".$args{port});
 $session->cmd("no shutdown");
 #TURN OFF SWITCHPORT
@@ -69,9 +70,10 @@ my $self = shift;
 my %args = @_;
 #Set a port at a vlan
 #CLEAN THE ARP CACHE
-$session->cmd("clear arp-cache");
+$session->cmd("clear arp-cache");#GO TO CONF MODE FOR THIS PORT
 #GO TO CONF MODE FOR THIS PORT
 $session->cmd("conf t");
+$session->cmd("default interface gigabit 0/".$args{port});
 $session->cmd("interface gigabit 0/".$args{port});
 #TURN ON SWITCHPORT AND MAKE MODE ACCESS
 $session->cmd("switchport");
@@ -94,7 +96,7 @@ sub portstatus {
 
   my @cmd_output = $session->cmd("show ip interface brief gigabit 0/$args{port}");
 
-  if (@cmd_output[1] =~ /down/) {
+  if ($cmd_output[1] =~ /down/) {
     return 0;
   }
   return 1;

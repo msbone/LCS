@@ -36,7 +36,7 @@ while (my $ref = $sth->fetchrow_hashref()) {
     #THIS SHOULD MAKE IT WAIT FOR THE PORT IS UP, IF THE SWITCH IS ACCTUAL CONNECTED, IF NOT THE PORT IS UP OSPF WILL NOT REDISTUBUTE THE ROUTE
     $distro -> setup_port(port => $connected_port);
     stuff->log(message => "Port $connected_port on $distro_name setup in config mode", switch => $switch_name);
-    sleep(3);
+    sleep(5);
     if($distro -> portstatus(port => $connected_port) ==  0) {
       stuff->log(message => "The port $connected_port on $distro_name is not up.", switch => $switch_name);
       print "PORT IS NOT UP, NEXT SWITCH!";
@@ -47,7 +47,7 @@ while (my $ref = $sth->fetchrow_hashref()) {
 
     if ($respond == 0) {
       print "\n The port $connected_port on $distro_name is not up, or there is a routing problem\n";
-      stuff->log(message => "$distro_name is having a routing problem, or the port is not up", switch => $switch_name);
+      stuff->log(message => "$distro_name is having a routing problem, or has fallen down", switch => $switch_name);
       next;
     }
     stuff->log(message => "We will start to ping 10.90.90.90", switch => $switch_name);
@@ -66,7 +66,23 @@ while (my $ref = $sth->fetchrow_hashref()) {
     sleep(1);
     $dlink->setIP(ip => "10.90.90.90", gateway => "10.90.90.1", subnetmask => "255.255.255.0");
     sleep(1);
-    $dlink->sendConfig(tftp => $lcs::config::tftp_ip,file => "config.bin");
+    #Check if this is C1 (SDOK) or B1 (VLAN)
+print $dlink->getHWversion();
+
+$switch_version = $dlink->getHWversion();
+
+    if($switch_version eq "C1") {
+      stuff->log(message => "HW version C1", switch => $switch_name);
+      $dlink->sendConfig(tftp => $lcs::config::tftp_ip,file => "C1.bin");
+    }
+    elsif($switch_version eq "B1") {
+      stuff->log(message => "HW version B1", switch => $switch_name);
+      $dlink->sendConfig(tftp => $lcs::config::tftp_ip,file => "B1.bin");
+    }
+    else {
+      stuff->log(message => "Switch is not supported $switch_version, quit", switch => $switch_name);
+      next;
+    }
     stuff->log(message => "Sending config from $lcs::config::tftp_ip", switch => $switch_name);
     sleep(7);
     $dlink->close;
