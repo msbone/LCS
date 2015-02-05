@@ -102,4 +102,13 @@ sub portstatus {
   return 1;
 }
 
+sub shut_port {
+  my $self = shift;
+  my %args = @_;
+
+  $session->cmd("conf t");
+$session->cmd("interface gigabit 0/$args{port}");
+$session->cmd("shut");
+}
+
 1;

@@ -15,21 +15,29 @@ stuff->log(message => "Started run.pl");
 
 #THE SCRIPT OF ALL SCRIPTS
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
-$sql = "select netlist.subnet, netlist.id AS netid, netlist.vlan, switches.*, coreswitches.name AS distroname, coreswitches.model AS distromodel, coreswitches.ip as distroip from switches JOIN coreswitches, netlist WHERE netlist.id = switches.net_id AND switches.distro_id = coreswitches.id AND switches.model = 'dgs24' AND switches.configured = 0 ORDER BY switches.distro_id";
+$sql = "select netlist.subnet, netlist.id AS netid, netlist.vlan, switches.*, coreswitches.name AS distroname, coreswitches.model AS distromodel, coreswitches.ip as distroip from switches JOIN coreswitches, netlist WHERE netlist.id = switches.net_id AND switches.distro_id = coreswitches.id AND switches.model = 'dgs24' AND switches.configured = 0 ORDER BY switches.distro_id, switches.distro_port";
 
 $sth = $dbh->prepare($sql);
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 
 while (my $ref = $sth->fetchrow_hashref()) {
 
+
+if($ref->{'distroip'} ne  $distro_ip && $ref->{'distroip'} ne ""){
+stuff->log(message => "Changed distro from $distro_name to $ref->{'distroname'}", switch => "");
+sleep 60;
+}
+
   $distro_name = $ref->{'distroname'};
   $distro_model = $ref->{'distromodel'};
   $distro_ip = $ref->{'distroip'};
   $switch_name = $ref->{'name'};
 
+
   $connected_port = $ref->{'distro_port'};
 
   if($distro_model eq "3560g") {
+
     stuff->log(message => "Starting magic", switch => $switch_name);
     my $distro = ciscoconf->connect(ip => $distro_ip,username => $lcs::config::ios_user,password => $lcs::config::ios_pass,hostname => $distro_name, enable_password => $lcs::config::ios_pass);
     stuff->log(message => "Connected to $distro_name", switch => $switch_name);
@@ -40,7 +48,9 @@ while (my $ref = $sth->fetchrow_hashref()) {
     if($distro -> portstatus(port => $connected_port) ==  0) {
       stuff->log(message => "The port $connected_port on $distro_name is not up.", switch => $switch_name);
       print "PORT IS NOT UP, NEXT SWITCH!";
-      next;
+$distro -> setvlan(port => $connected_port,vlan => "666", desc => "DLINKAC FAILED HERE");
+$distro -> shut_port(port => $connected_port);
+next;
     }
     print "We will start to ping the interface on $distro_name \n";
     $respond = stuff->ping(ip => "10.90.90.1",tryes => "35");
@@ -48,7 +58,9 @@ while (my $ref = $sth->fetchrow_hashref()) {
     if ($respond == 0) {
       print "\n The port $connected_port on $distro_name is not up, or there is a routing problem\n";
       stuff->log(message => "$distro_name is having a routing problem, or has fallen down", switch => $switch_name);
-      next;
+$distro -> setvlan(port => $connected_port,vlan => "666", desc => "DLINKAC FAILED HERE");
+$distro -> shut_port(port => $connected_port);
+next;
     }
     stuff->log(message => "We will start to ping 10.90.90.90", switch => $switch_name);
     print "We will start to ping 10.90.90.90 \n";
@@ -58,7 +70,9 @@ while (my $ref = $sth->fetchrow_hashref()) {
     {
       print "No able to ping $ref->{'name'}, check that the switch is connected and in default config\n";
       stuff->log(message => "No able to ping, check that the switch is connected and in default config", switch => $switch_name);
-      next;
+$distro -> setvlan(port => $connected_port,vlan => "666", desc => "DLINKAC FAILED HERE");
+$distro -> shut_port(port => $connected_port);
+next;
     }
     #DO THE DLINK MAGIC
     $dlink = dlink->connect(ip => "10.90.90.90",username => "admin",password => "admin", name => $ref->{'name'});
@@ -81,7 +95,9 @@ $switch_version = $dlink->getHWversion();
     }
     else {
       stuff->log(message => "Switch is not supported $switch_version, quit", switch => $switch_name);
-      next;
+$distro -> setvlan(port => $connected_port,vlan => "666", desc => "DLINKAC FAILED HERE");
+$distro -> shut_port(port => $connected_port);
+next;
     }
     stuff->log(message => "Sending config from $lcs::config::tftp_ip", switch => $switch_name);
     sleep(7);
@@ -97,7 +113,8 @@ $switch_version = $dlink->getHWversion();
     {
       print "No able to ping $ref->{'name'}, the switch is not up after config push \n";
       stuff->log(message => "No able to ping, the switch is not up after config push", switch => $switch_name);
-      next;
+$distro -> shut_port(port => $connected_port);
+next;
     }
     print "Switch is back online, we now set password then new IP \n";
     stuff->log(message => "Switch is back online, we now set password then new IP", switch => $switch_name);

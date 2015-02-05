@@ -10,10 +10,10 @@ $map = file_get_contents("seatmap.txt");
 $sql = "SELECT `id`,`placement` FROM `switches` WHERE `placement` IS NOT NULL";
 
 $result = mysqli_query($con,$sql);
-  while($row = mysqli_fetch_array($result))
-  {
+while($row = mysqli_fetch_array($result))
+{
   #The switch placement is in RAD,SETE
-   $placement = explode("/",$row["placement"]);
+  $placement = explode("/",$row["placement"]);
 
   $switches[$placement[0]][$placement[1]] = $row["id"];
 }
@@ -33,17 +33,17 @@ while($row = mysqli_fetch_array($result))
 <!doctype html>
 <html>
 <head>
-  <script type="text/javascript">
-  $(document).ready(function() {
-    $("td").click(function () {
-      $('#sidebar').load('/place_switches/sidebar.php?id=' + $(this).attr("id"));
-      jQuery.post("/place_switches/functions.php", {seat: $(this).attr("id") },
-      function(data){
-        $('#salkart').load('/place_switches/draw.php');
-      }
-      );
-    });
-  });
+<script type="text/javascript">
+$(document).ready(function() {
+  $("td").click(function () {
+    $('#sidebar').load('/place_switches/sidebar.php?id=' + $(this).attr("id"));
+    jQuery.post("/place_switches/functions.php", {seat: $(this).attr("id") },
+    function(data){
+      $('#salkart').load('/place_switches/draw.php');
+    }
+  );
+});
+});
 </script>
 <meta charset="utf-8">
 </head>
@@ -98,7 +98,7 @@ while($row = mysqli_fetch_array($result))
               <?php
             }
             $x++;
-}
+          }
           elseif($thing == "O") {
             ?>
             <td id="<?php echo $x.".".$y; ?>" class="white" onmouseover="tooltip.show('<?php echo $x." ".$y; ?>');" onmouseout="tooltip.hide();"> </td>
@@ -110,7 +110,7 @@ while($row = mysqli_fetch_array($result))
             <td id="<?php echo $x.".".$y; ?>" class="white" onmouseover="tooltip.show('<?php echo $x." ".$y; ?>');" onmouseout="tooltip.hide();">X</td>
             <?php
             $x++;
-              }
+          }
           elseif($thing == "S") {
             ?>
             <td id="<?php echo $x.".".$y; ?>" class="stage" onmouseover="tooltip.show('<strong>Scene</strong>');" onmouseout="tooltip.hide();"></td>
@@ -136,3 +136,4 @@ while($row = mysqli_fetch_array($result))
       ?>
     </body>
     </html>
+    
