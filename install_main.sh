@@ -11,8 +11,28 @@ mv LCS-master/* ./
 rm master.zip
 rm -R LCS-master
 
+
 #make the config.pm
 cp include/config.pm.example include/config.pm
+
+#SETUP THE WEBSERVER
+echo "CREATING CONFIG FOR THE WEB SERVER"
+cat > /etc/apache2/sites-avaliable/000-default.conf << EOF
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /lcs/web/
+        <Directory "/lcs/web/">
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+EOF
+
 
 #Make the hardlink for dns and dhcp key
 ln /etc/bind/rndc.key /etc/dhcp/ddns-keys/rndc.key

@@ -17,7 +17,7 @@ our $server_nett = ""; #USED IN DHCP 0.0.0.0/mask
 our $isc_dhcp_dir = "/etc/dhcp/";
 
 #DNS SETTING
-our $dns_transfer = ""; #0.0.0.0; 0.0.0.0; Automatic add pri and sec server
+our $dns_transfer = ""; #0.0.0.0; 0.0.0.0; system will automatic add pri and sec server
 our $nett = ""; #used in dns 0.0.0.0/mask;
 our $bind9_dir = "/etc/bind/";
 
@@ -29,13 +29,15 @@ our $db_root_password = ""; #REMOVE THIS WHEN setup_database.pl IS DONE!!
 
 
 #WIFI
-our $unifi_controller_ip = "";
+our $unifi_controller_ip = ""; #USED IN DHCP
 
 #NETWORK
 our $ios_user = "";
 our $ios_pass = "";
 
 our $snmp_community = "";
+our $snmp_write_community = "";
+
 
 our $dlink_pass = "";
 our $tftp_ip = $pri_v4;
