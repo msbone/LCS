@@ -5,20 +5,18 @@
   <script>
   $(document).ready(function(){
     setInterval(function(){
-      $.getJSON("switches.json",function(result){
-        var $status;
-        $.each(result, function(i, field){
-          $status += i+" "+ field.status;
-        });
-      });
-      $("div").text($status);
+        $.getJSON('switches.json', function(data) {
+                $.each(data, function(index) {
+                    alert(data[index].TEST1);
+                    alert(data[index].TEST2);
+                });
+            });
     }, 5000);
   });
   </script>
 </head>
 <body>
 
-  <button>Get JSON data</button>
   <div></div>
 
 </body>

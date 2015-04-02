@@ -33,6 +33,8 @@ cat > /etc/apache2/sites-available/000-default.conf << EOF
 </VirtualHost>
 EOF
 
+service apache2 restart
+
 
 #Make the hardlink for dns and dhcp key
 ln /etc/bind/rndc.key /etc/dhcp/ddns-keys/rndc.key
