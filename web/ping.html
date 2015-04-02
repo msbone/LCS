@@ -6,9 +6,8 @@
   $(document).ready(function(){
     setInterval(function(){
         $.getJSON('switches.json', function(data) {
-                $.each(data, function(index) {
-                    alert(data[index].TEST1);
-                    alert(data[index].TEST2);
+                $.each(data, function(key, val) {
+                    console.log(key+" is " + val);
                 });
             });
     }, 5000);
