@@ -17,7 +17,7 @@ cp include/config.pm.example include/config.pm
 
 #SETUP THE WEBSERVER
 echo "CREATING CONFIG FOR THE WEB SERVER"
-cat > /etc/apache2/sites-avaliable/000-default.conf << EOF
+cat > /etc/apache2/sites-available/000-default.conf << EOF
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
         DocumentRoot /lcs/web/
