@@ -4,7 +4,7 @@ session_start();
 include("../database.php");
 
 //Henter ut "mapen" fra seatmap.txt (den blir hente ifra sharptickets.net ved første gang oppstart av lcs)
-$map = file_get_contents("seatmap.txt");
+$map = file_get_contents("../../include/seatmap.txt");
 
 #Grap all the switches and put them in an array
 $sql = "SELECT `id`,`placement` FROM `switches` WHERE `placement` IS NOT NULL";

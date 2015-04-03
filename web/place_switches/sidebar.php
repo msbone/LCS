@@ -85,6 +85,23 @@ elseif($switch_found){
 
 else {
 
+//La oss sjekke om det vart valgt en kjerneswitch
+$sql = "SELECT coreswitches.id, FROM `switches`
+WHERE coreswitches.placement = '$placement'";
+
+$core_found = false;
+
+$result = mysqli_query($con,$sql);
+while($row = mysqli_fetch_array($result))
+{
+  $core_found = true;
+  echo "We found a coreswitch, not sure what to do tho <br />";
+}
+if($core_found == false) {
+
+  echo "What do you want to create? a coreswitch or a egdeswitch?";
+
+
   echo "Fill in the name, select a network. DO NOT EDIT IP<br />";
 
 $closest_core = 0;
@@ -289,5 +306,5 @@ foreach($distro_list as $key => $value) {
     <input type="submit" id="submit" value="Make switch">
   </form>
   <?php
-
+}
 }

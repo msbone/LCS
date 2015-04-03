@@ -10,4 +10,4 @@
   });
   </script>
   <div id="salkart"> </div>
-  <div id="sidebar">Velg en switch eller trykk på en tom plass</div>
+  <div id="sidebar">Velg en switch eller opprett en ny</div>
