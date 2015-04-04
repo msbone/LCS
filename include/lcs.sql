@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `netlist` (
   `dhcp_reserved` varchar(12) DEFAULT '0',
   `last_dhcp_request` int(12) DEFAULT '0',
   `desc` varchar(64) DEFAULT NULL,
+  `in_use` int(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -35,6 +36,9 @@ CREATE TABLE IF NOT EXISTS `switches` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+--
+-- Tabellstruktur for tabell `coreswitches`
+--
 
 CREATE TABLE IF NOT EXISTS `coreswitches` (
   `id` int(12) NOT NULL AUTO_INCREMENT,
@@ -44,5 +48,18 @@ CREATE TABLE IF NOT EXISTS `coreswitches` (
   `configured` int(1) DEFAULT '0',
   `placement` varchar(12) DEFAULT NULL,
   `de_ports` varchar(32) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Tabellstruktur for tabell `link_networks`
+--
+
+CREATE TABLE IF NOT EXISTS `link_networks` (
+  `id` int(12) NOT NULL AUTO_INCREMENT,
+  `core_1` int(12) NOT NULL,
+  `core_2` int(12) NOT NULL,
+  `configured` int(1) DEFAULT '0',
+  `ip_range` varchar(32) DEFAULT '0.0.0.0/30',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
