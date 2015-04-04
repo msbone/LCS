@@ -97,10 +97,14 @@ while($row = mysqli_fetch_array($result))
 {
   $core_found = true;
   echo "We found a coreswitch, not sure what to do tho <br />";
+
+
 }
 if($core_found == false) {
 
-  echo "What do you want to create? a coreswitch or a egdeswitch?";
+  ?>
+  <a href="create_core.php?placement=<?php echo $_GET["id"]; ?>">Press here to create a coreswitch here</a>
+  <?php
 
 
   echo "Fill in the name, select a network. DO NOT EDIT IP<br />";
