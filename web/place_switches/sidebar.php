@@ -87,10 +87,8 @@ else {
 
 
 //La oss sjekke om det vart valgt en kjerneswitch
-$sql = "SELECT coreswitches.id, FROM `switches`
+$sql = "SELECT coreswitches.id FROM `coreswitches`
 WHERE coreswitches.placement = '$placement'";
-
-echo $sql;
 
 $core_found = false;
 
