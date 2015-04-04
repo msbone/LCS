@@ -12,7 +12,7 @@ our $sec_v4 = "";
 
 #DHCP SETTING
 our $pri_dns_v4 = $pri_v4;
-our $sec_dns_v4 = "8.8.8.8";
+our $sec_dns_v4 = "8.8.8.8"; #Change this to sec_server when it is running
 our $server_nett = ""; #USED IN DHCP 0.0.0.0/mask
 our $isc_dhcp_dir = "/etc/dhcp/";
 
@@ -24,12 +24,11 @@ our $bind9_dir = "/etc/bind/";
 #DATABASE
 our $db_name = "lcs";
 our $db_username = "lcs";
-our $db_password = ""; #CHANGE THIS AFTER setup_database.pl is run (it will generate it for you)
 our $db_root_password = ""; #REMOVE THIS WHEN setup_database.pl IS DONE!!
 
 
 #WIFI
-our $unifi_controller_ip = ""; #USED IN DHCP
+our $unifi_controller_ip = ""; #USED IN DHCP -- TODO NOT WORKING --
 
 #NETWORK
 our $ios_user = "";
@@ -41,4 +40,8 @@ our $snmp_write_community = "";
 
 our $dlink_pass = "";
 our $tftp_ip = $pri_v4;
+
+#READ THE DATABASE PASSWORD FROM db_password.txt
+open (DBPASSWORD, 'db_password.txt'); while (<DBPASSWORD>) { chomp; our $db_password = $_; } close (DBPASSWORD);
+
 1;
