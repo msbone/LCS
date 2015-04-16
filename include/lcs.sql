@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `switches` (
   `configured` int(1) DEFAULT '0',
   `placement` varchar(12) DEFAULT NULL,
   `alive` int(1) DEFAULT '0',
+  `last_update` int(10) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -48,6 +49,8 @@ CREATE TABLE IF NOT EXISTS `coreswitches` (
   `configured` int(1) DEFAULT '0',
   `placement` varchar(12) DEFAULT NULL,
   `de_ports` varchar(32) DEFAULT '0',
+  `alive` int(1) DEFAULT '0',
+  `last_update` int(10) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
