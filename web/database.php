@@ -1,5 +1,5 @@
 <?php
-$db_password = file_get_contents('../include/db_password.txt') or die("WHOOPS");
+$db_password = file_get_contents('/lcs/include/db_password.txt');
 
 $con=mysqli_connect("localhost","lcs",$db_password,"lcs"); #TODO, GET THE USER FROM config.pm (some magic)
 
