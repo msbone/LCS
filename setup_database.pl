@@ -8,6 +8,11 @@ my $db_user = $lcs::config::db_username;
 my $db_password = $pass->randpattern("CnnCnCcCnCcn");
 my $root_password = $lcs::config::db_root_password;
 
+if($root_password eq "") {
+  print "\n Root password is blank, change the root password in config.pm \n";
+  exit;
+}
+
 $Q1="CREATE DATABASE IF NOT EXISTS $db_name;";
 $Q2="GRANT ALL ON $db_name.* TO \'$db_user\'@\'localhost\' IDENTIFIED BY \'$db_password\';";
 $Q3="FLUSH PRIVILEGES;";
@@ -17,7 +22,7 @@ system("mysql -uroot -p$root_password  -e \"$sql\"");
 system("mysql -uroot -p$root_password $db_name < include/lcs.sql");
 
 my $db_password_file = '/lcs/include/db_password.txt';
-open(my $fh, '>', $filename) or die "Could not open file '$db_password_file' $!";
+open(my $fh, '>', $db_password_file) or die "Could not open file '$db_password_file' $!";
 print $fh $db_password;
 close $fh;
 

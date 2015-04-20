@@ -1,5 +1,7 @@
 <?php
-$con=mysqli_connect("localhost","lcs","E18G5VyL3Oo1","lcs"); #TODO, GET THE USER AND PASSWORD FROM config.pm (some magic)
+$db_password = file_get_contents('../include/db_password.txt') or die("WHOOPS");
+
+$con=mysqli_connect("localhost","lcs",$db_password,"lcs"); #TODO, GET THE USER FROM config.pm (some magic)
 
 // Check connection
 if (mysqli_connect_errno($con))

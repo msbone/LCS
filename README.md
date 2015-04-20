@@ -10,8 +10,8 @@ Install mysql-server ```apt-get install mysql-server``` <br />
 Get the setup script from https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh  or just run the following command<br />
 ```wget https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh; chmod +x install_main.sh; ./install_main.sh; rm install_main.sh;```
 
-After the script have downloaded the files, fill in the settings at config.pm
-Then run setup_database.pl It should give you an password. Set that password in db_password in config.pm, remove the root password from the file
+After the script have downloaded the files, fill in the settings at config.pm. The one that is important is DB root password.
+Then run setup_database.pl. It is now safe to remove the DB root password from config.pm
 
 The core system is now running, but without data. Start by adding some networks. The easiest way to do that is just use the tools/create_net.pl or tools/create_net_range.pl
 
@@ -25,7 +25,6 @@ Usage: create_net_range.pl first_ip_base net_size numer_of_networks dhcp name
 
 The dhcp/dns config is not created automatic, you will have to run update_config.pl this would also restart/reload the services
 
-The dlink system is included in this package under dlinkac
-
+The dlink system is included in this package under dlinkac. Read the readme.
 
 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">LCS</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Ole Mathias</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
