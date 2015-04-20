@@ -14,6 +14,7 @@ rm -R LCS-master
 
 #make the config.pm
 cp include/config.pm.example include/config.pm
+touch include/db_password.txt
 
 #SETUP THE WEBSERVER
 echo "CREATING CONFIG FOR THE WEB SERVER"
