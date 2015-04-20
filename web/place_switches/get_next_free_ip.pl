@@ -3,14 +3,11 @@ use Net::Netmask;
 use DBI;
 no warnings;
 
-require "/lcs/include/config.pm"; 
+require "/lcs/include/config.pm";
 
 # (1) quit unless we have the correct number of command-line args
 $num_args = $#ARGV + 1;
 if ($num_args != 1) {
-
-  #example create_net_range.pl 213.184.214.0 25 4 1 DE
-  #Will create 213.184.214.0/25 213.184.214.128/25 213.184.215.0/25 213.184.215.128/25
 
   print "\nUsage: get_free_ips.pl network_id\n";
   print "Example: get_free_ips.pl 200 \n";

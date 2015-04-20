@@ -1,6 +1,6 @@
 Lan Config System
 ===
-The system is only tested on Ubuntu 14.04.1 clean install
+The system is only tested on Ubuntu 14.04.2 clean install
 
 
 ####How to setup the master server (main NMS, DHCP and master DNS) <br />
