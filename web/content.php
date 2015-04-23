@@ -32,10 +32,10 @@ function get_page_name() {
 function render_menu() {
   foreach ($this->pages as $key => $value) {
     if(@$_GET["page"] == $key) {
-    echo '<li class="active"><a href="\index.php?page='.$key.'">'.$value.'</a></li>';
+    echo '<li class="active"><a href="/index.php?page='.$key.'">'.$value.'</a></li>';
   }
   else {
-    echo '<li><a href="\index.php?page='.$key.'">'.$value.'</a></li>';
+    echo '<li><a href="/index.php?page='.$key.'">'.$value.'</a></li>';
   }
 }
 
