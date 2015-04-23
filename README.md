@@ -11,7 +11,7 @@ Get the setup script from https://raw.githubusercontent.com/msbone/LCS/master/in
 ```wget https://raw.githubusercontent.com/msbone/LCS/master/install_main.sh; chmod +x install_main.sh; ./install_main.sh; rm install_main.sh;```
 
 After the script have downloaded the files, fill in the settings at config.pm. The one that is important is DB root password.
-Then run setup_database.pl. It is now safe to remove the DB root password from config.pm
+Then run perl setup_database.pl. It is now safe to remove the DB root password from config.pm
 
 The core system is now running, but without data. Start by adding some networks. The easiest way to do that is just use the tools/create_net.pl or tools/create_net_range.pl
 

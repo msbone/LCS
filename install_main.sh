@@ -68,4 +68,4 @@ apt-get -y remove apparmor apparmor-utils
 apt-get -y purge apparmor
 #Det her krever en omstart, men vi gir beskjed om det forst etter database er laget
 
-echo "LCS is finished instaling (/lcs/), Fill in the missing info in include/config.pm then run setup_database.pl"
+echo "LCS is finished instaling (/lcs/), Fill in the root password for mysql in /lcs/include/config.pm then run perl /lcs/setup_database.pl"
