@@ -34,9 +34,11 @@ function render_menu() {
     if(@$_GET["page"] == $key) {
     echo '<li class="active"><a href="/index.php?page='.$key.'">'.$value.'</a></li>';
   }
-  else {
-    echo '<li><a href="/index.php?page='.$key.'">'.$value.'</a></li>';
-  }
+  elseif(@$_GET["page"] == "" AND $key == "frontpage") {
+    echo '<li class="active"><a href="/index.php?page='.$key.'">'.$value.'</a></li>';
+  }else {
+echo '<li><a href="/index.php?page='.$key.'">'.$value.'</a></li>';
+}
 }
 
 }
