@@ -1,5 +1,5 @@
 <?php
-include("database.php");
+include("../database.php");
 
 $return_arr = array();
 #Grap all the switches and put them in an array
