@@ -225,11 +225,11 @@ if (can_edit) {
     if (dragging_switch === null) {
       return;
     }
-    var x = e.clientX + delta_x - map.getBoundingClientRect().top;
-    var y = e.clientY + delta_y - map.getBoundingClientRect().left;
+    var x = e.clientX + delta_x - 357;
+    var y = e.clientY + delta_y - 139;
 
     var request = new XMLHttpRequest();
-    request.open('POST', '/change-switch-pos.pl', true);
+    request.open('POST', '/render/change-switch-pos.php', true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
     request.send("switch=" + dragging_switch + "&x=" + x + "&y=" + y);
 

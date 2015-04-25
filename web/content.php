@@ -4,6 +4,7 @@ class content{
 public $pages = [
     "frontpage" => "Dashboard",
     "switchmap" => "Switchmap",
+    "networks" => "Networks",
     "configure" => "Configure",
 ];
 
@@ -12,7 +13,7 @@ function render(){
     foreach ($this->pages as $key => $value) {
       if(@$_GET["page"] == $key) {
       include("pages/$key.php");
-      exit;
+      return;
     }
 }
 include("pages/frontpage.php");
@@ -23,7 +24,6 @@ function get_page_name() {
   foreach ($this->pages as $key => $value) {
     if(@$_GET["page"] == $key) {
     return $value;
-    exit;
   }
 }
   return "Dashboard";

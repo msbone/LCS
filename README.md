@@ -27,4 +27,6 @@ The dhcp/dns config is not created automatic, you will have to run update_config
 
 The dlink system is included in this package under dlinkac. Read the readme.
 
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">LCS</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Ole Mathias</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+Most of the code is based on The Gatherings NMS and part of the system is almost a direct copy from https://github.com/tech-server/tgmanage
+
+Licensed under the GNU GPL, version 2. See the included COPYING file.

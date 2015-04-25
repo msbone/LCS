@@ -1,6 +1,8 @@
 <?php
 include("content.php");
+include("sidebar.php");
 $content = new content;
+$sidebar = new sidebar;
 ?>
 
 <!DOCTYPE html>
@@ -46,9 +48,6 @@ $content = new content;
              ?>
             <li><a href="https://github.com/msbone/LCS">About LCS</a></li>
           </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
         </div>
       </div>
     </nav>
@@ -61,6 +60,11 @@ $content = new content;
             $content->render_menu();
              ?>
           </ul>
+          <div class="custom-sidebar">
+            <?php
+            $sidebar->render();
+             ?>
+           </div>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header"><?php echo $content->get_page_name(); ?></h1>
