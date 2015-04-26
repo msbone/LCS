@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/render.css">
+<link rel="stylesheet" href="/render/render.css">
 <p id="playground">
  <svg id="lines" width="1580" height="1032" style="position: absolute; top: 0; left: 0; z-index: 1">
  </svg>

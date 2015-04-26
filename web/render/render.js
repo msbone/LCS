@@ -121,11 +121,11 @@ function gradient_from_latency(latency_ms, latency_secondary_ms) {
 }
 
 function rgb_from_latency(latency_ms) {
-  if (latency_ms === null || latency_ms === undefined) {
+  if (latency_ms == null || latency_ms === undefined) {
     return '#0000ff';
   }
 
-  // 10ms is max
+  // 10ms is max //NOT SURE HOW THIS WORKS
   var l = latency_ms;
   if (l >= 2.0) {
     return 'rgb(255, 0, 0)';
