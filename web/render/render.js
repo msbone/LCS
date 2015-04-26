@@ -2,7 +2,7 @@ var switches = [];
 var linknets = [];
 var last_dataset = [];
 get_switches();
-//get_ping();
+get_ping();
 
 function json_request(url, func, repeat_ms) {
   var request = new XMLHttpRequest();
@@ -126,7 +126,7 @@ function rgb_from_latency(latency_ms) {
   }
 
   // 10ms is max
-  var l = latency_ms / 50.0;
+  var l = latency_ms;
   if (l >= 2.0) {
     return 'rgb(255, 0, 0)';
   } else if (l >= 1.0) {

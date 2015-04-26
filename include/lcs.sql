@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS `switches` (
   `de_ports` varchar(32) DEFAULT NULL,
   `distro_id` int(12) DEFAULT NULL,
   `distro_port` varchar(64) DEFAULT NULL,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `latency_ms` double DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -62,15 +64,3 @@ CREATE TABLE IF NOT EXISTS `placements` (
   `y2` int(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Tabellstruktur for tabell `ping`
---
-
-CREATE TABLE IF NOT EXISTS `ping` (
-  `id` int(64) NOT NULL AUTO_INCREMENT,
-  `switch` int(12) NOT NULL,
-  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `latency_ms` double DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

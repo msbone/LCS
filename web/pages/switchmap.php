@@ -7,7 +7,7 @@
 <script>
  // These are used by ping.js, below.
  var switches_url = "/render/switches-json.php";
- var ping_url = "/render/ping-json.pl";
+ var ping_url = "/render/ping-json.php";
  var draw_linknets = false;
  var can_edit = true;
 </script>
