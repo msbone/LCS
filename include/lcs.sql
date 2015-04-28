@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `netlist` (
   `coreswitch` int(12) NOT NULL,
   `dhcp` int(1) DEFAULT '0',
   `dhcp_reserved` varchar(12) DEFAULT '0',
-  `last_dhcp_request` int(12) DEFAULT '0',
+  `last_dhcp_request` varchar(64) DEFAULT '0',
   `desc` varchar(64) DEFAULT NULL,
   `in_use` int(1) DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `switches` (
   `de_ports` varchar(32) DEFAULT NULL,
   `distro_id` int(12) DEFAULT NULL,
   `distro_port` varchar(64) DEFAULT NULL,
-  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` int(32) DEFAULT NULL,
   `latency_ms` double DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
