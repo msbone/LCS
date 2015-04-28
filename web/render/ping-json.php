@@ -10,7 +10,7 @@ $result = mysqli_query($con,$sql);
   {
     $date = new DateTime();
     $current = $date->getTimestamp();
-    $last_accepted_time = $current +5;
+    $last_accepted_time = $current -5;
     if($row['updated'] < $last_accepted_time) {
       $row_array['latency'] = "null";
     } else {
