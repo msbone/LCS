@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use DBI;
-use Net::Ping;
+use Net::Oping;
 
 require "/lcs/include/config.pm";
 
@@ -10,17 +10,31 @@ $sql = "select * from switches WHERE ip IS NOT NULL";
 $sth = $dbh->prepare($sql);
 
 while(true) {
+  $ping = Net::Oping->new;
+  $ping->timeout(0.2);
+  $ping->ttl(8);
 
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 
 while (my $ref = $sth->fetchrow_hashref()) {
-  my $p=Net::Ping->new('icmp');
-  if ($p->ping($ref->{'ip'}, "1")){
-    print "Pong $ref->{'ip'} alive \n";
-    $dbh->do("UPDATE `switches` SET  `alive` = 1 WHERE id = '".$ref->{'id'}."'");
-  } else {
-    print "Pong $ref->{'ip'} dead \n";
-    $dbh->do("UPDATE `switches` SET  `alive` = 0 WHERE id = '".$ref->{'id'}."'");
-  }
+my $switch = $ref->{'id'};
+my $ip = $ref->{'ip'};
+$ping->host_add($ip);
+$ip_to_switch{$ip} = $switch;
 }
+
+my $result = $ping->ping();
+  die $ping->get_error if (!defined($result));
+
+  while (my ($ip, $latency) = each %$result) {
+    my $switch = $ip_to_switch{$ip};
+    next if (!defined($switch));
+
+    $latency //= "NULL";
+
+    print "Switch: $switch : $latency \n";
+    $epoc = time();
+    $dbh->do("UPDATE  `switches` SET  `latency_ms` =  $latency,`updated` =  '$epoc' WHERE  `id` =$switch");
+  }
+  sleep (1);
 }

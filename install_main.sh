@@ -2,7 +2,7 @@
 echo "Making stuff nice"
 
 sudo mkdir -p "/lcs/"
-apt-get -y install unzip libstring-random-perl libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa
+apt-get -y install unzip libstring-random-perl libnetaddr-ip-perl  libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa libnet-oping-perl
 cd "/lcs"
 echo "Downloading code....."
 wget https://github.com/msbone/lcs/archive/master.zip
@@ -68,4 +68,4 @@ apt-get -y remove apparmor apparmor-utils
 apt-get -y purge apparmor
 #Det her krever en omstart, men vi gir beskjed om det forst etter database er laget
 
-echo "LCS is finished instaling (/lcs/), Fill in the missing info in include/config.pm then run setup_database.pl"
+echo "LCS is finished instaling (/lcs/), Fill in the root password for mysql in /lcs/include/config.pm then run perl /lcs/setup_database.pl"

@@ -27,4 +27,4 @@ print $fh $db_password;
 close $fh;
 
 print "Created database $db_name with user: $db_user and password: $db_password \n  REMOVE ROOT PASSWORD FROM config.pm\n";
-print "THE SERVER NEED A REBOOT TO CONTINUE, PLEASE RESTART\n";
+print "THE SERVER NEED A REBOOT TO RUN SMOOTH, PLEASE RESTART\n";
