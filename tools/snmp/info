@@ -1,0 +1,10 @@
+1.3.6.1.2.1.2.2.1.8 - PORT STATUS
+1.3.6.1.2.1.31.1.1.1.1 - PORT NAME
+1.3.6.1.2.1.2.2.1.2 - PORT SYSTEM DESC
+1.3.6.1.2.1.31.1.1.1.18 - PORT DESC
+1.3.6.1.2.1.31.1.1.1.15 - PORT SPEED
+
+ifHCInOctets: 1.3.6.1.2.1.31.1.1.1.6 (64-bit Octets in counter)
+ifHCOutOctets: 1.3.6.1.2.1.31.1.1.1.10 (64-bit Octets out counter)
+ifHCInUcastPkts:  1.3.6.1.2.1.31.1.1.1.7 (64-bit Packets in counter)
+ifHCOutUcastPkts:  1.3.6.1.2.1.31.1.1.1.11 (64-bit Packets out counter)
