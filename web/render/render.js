@@ -1,6 +1,8 @@
 var switches = [];
 var linknets = [];
 var last_dataset = [];
+
+
 get_switches();
 get_ping();
 
@@ -119,6 +121,8 @@ function gradient_from_latency(latency_ms, latency_secondary_ms) {
     rgb_from_latency(latency_ms) + ', ' +
     rgb_from_latency(latency_secondary_ms) + ')';
 }
+
+
 
 function rgb_from_latency(latency_ms) {
   if (latency_ms == null || latency_ms === undefined) {
