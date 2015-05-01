@@ -39,7 +39,7 @@ $sidebar = new sidebar;
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">LCS - HYPE 2015 - <?php echo $content->get_page_name(); ?></a>
+          <a class="navbar-brand" href="/">LCS - HYPE 2015 - <?php echo $content->get_page_name(); ?></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -67,7 +67,7 @@ $sidebar = new sidebar;
            </div>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header"><?php echo $content->get_page_name(); ?></h1>
+          <h1 class="page-header"><?php echo $content->get_page_header(); ?></h1>
           <?php
           $content->render();
           ?>

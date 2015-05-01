@@ -2,14 +2,16 @@
 class sidebar{
 
 public $pages = [
-    "switchmap" => "Switchmap",
+    "switchmap" => "switches",
+    "switches" => "switches",
+    "port_traffic" => "switches",
 ];
 
 function render(){
 
     foreach ($this->pages as $key => $value) {
       if(@$_GET["page"] == $key) {
-      include("pages/$key-sidebar.php");
+      include("pages/$value-sidebar.php");
       return;
     }
 }

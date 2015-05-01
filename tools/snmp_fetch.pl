@@ -11,7 +11,7 @@ $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,
 my @values = ('ifName','ifHighSpeed','ifHCOutOctets','ifHCInOctets');
 
 our $qswitch = $dbh->prepare(<<"EOF")
-select * from switches WHERE ip IS NOT NULL
+select * from switches WHERE ip IS NOT NULL AND configured = '1'
 EOF
   or die "Couldn't prepare qswitch";
 my @switches = ();
@@ -61,13 +61,10 @@ sub callback
     while (my $ref = $sth2->fetchrow_hashref()) {
       my $id = $ref->{'id'};
       my $switch_name = $ref->{'name'};
-      my $title = "$switch_name - $vals[0]";
       my $rrd_file = "/lcs/web/rrd/$id.rrd";
 
       $epoc = time();
       RRDs::update $rrd_file, "-t", "input:output", "N:$vals[3]:$vals[2]";
-      CreateGraph($id,"hour",$title);
-
       #UPDATE THE DATABASE WITH THE LASTEST DATA
       my ($start,$step,$names,$data) = RRDs::fetch $rrd_file, "AVERAGE","--start","-60";
       for my $line (@$data) {
@@ -79,44 +76,15 @@ sub callback
     if($sth2->rows == 0) {
       #ADD
       $epoc = time();
+      $dbh->do("INSERT INTO `ports` (switch_id,ifName) VALUES ('$switch{'id'}', '$vals[0]')");
       my $rrd_file = "/lcs/web/rrd/$dbh->{mysql_insertid}.rrd";
-      $dbh->do("INSERT INTO `ports` (switch_id,ifName,ifHighSpeed, ifHCInOctets, ifHCOutOctets, updated) VALUES ('$switch{'id'}', '$vals[0]', '$vals[1]', '$vals[2]', '$vals[3]', '$epoc')");
-      RRDs:create $rrd_file, "--step 300", "--start $epoc", "DS:input:COUNTER:10080:U:U", "DS:output:COUNTER:10080:U:U", "RRA:AVERAGE:0.5:1:10080";
-      RRDs::update $rrd_file, "-t", "input:output", "N:$vals[3]:$vals[2]"
+      RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:input:COUNTER:10080:U:U", "DS:output:COUNTER:10080:U:U", "RRA:AVERAGE:0.5:1:10080";
+      my $ERR=RRDs::error;
+ die "ERROR while creating $rrd_file: $ERR\n" if $ERR;
+      RRDs::update $rrd_file, "-t", "input:output", "N:$vals[3]:$vals[2]";
     }
   }
   print "STOP: Polling $switch{'sysname'} took " . (time - $switch{'start'}) . "s \n";
-}
-
-sub CreateGraph {
-# creates graph
-# inputs: $_[0]: interface id
-#	        $_[1]: interval (ie, hour, day, week, month)
-#	        $_[2]: title
-my $image_location = "/lcs/web/rrd/$_[0]-$_[1].png";
-my $rrd_file = "/lcs/web/rrd/$_[0].rrd";
-RRDs::graph $image_location,
-"-s -1$_[1]",
-"-t $_[2]",
-"-h", "150", "-w", "650",
-"-l 0",
-"-a", "PNG",
-"-v bytes/sec",
-"DEF:in=$rrd_file:input:AVERAGE",
-"DEF:out=$rrd_file:output:AVERAGE",
-"CDEF:out_neg=out,-1,*",
-"AREA:in#32CD32:Incoming",
-"LINE1:in#336600",
-"GPRINT:in:MAX:  Max\\: %5.1lf %s",
-"GPRINT:in:AVERAGE: Avg\\: %5.1lf %S",
-"GPRINT:in:LAST: Current\\: %5.1lf %Sbytes/sec\\n",
-"AREA:out_neg#4169E1:Outgoing",
-"LINE1:out_neg#0033CC",
-"GPRINT:out:MAX:  Max\\: %5.1lf %s",
-"GPRINT:out:AVERAGE: Avg\\: %5.1lf %S",
-"GPRINT:out:LAST: Current\\: %5.1lf %Sbytes/sec",
-"HRULE:0#000000";
-if ($ERROR = RRDs::error) { print "$0: unable to generate $_[0] traffic graph: $ERROR\n"; }
 }
 
   populate_switches();

@@ -1,3 +1,14 @@
+<?php
+include("database.php");
+
+if(@$_GET["place"] != "") {
+#Prøve å plassere switchen på kartet
+$sql = "INSERT INTO placements (switch, x1, y1, x2, y2) VALUES ('".$_GET["place"]."','499','118','413','93')";
+mysqli_query($con, $sql);
+header("Location: /index.php?page=switchmap");
+die();
+}
+ ?>
 <link rel="stylesheet" href="/render/render.css">
 <p id="playground">
  <svg id="lines" width="1580" height="1032" style="position: absolute; top: 0; left: 0; z-index: 1">
