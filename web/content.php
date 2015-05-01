@@ -5,7 +5,7 @@ public $pages = [
     "frontpage" => "Dashboard",
     "switchmap" => "Switchmap",
     "networks" => "Networks",
-    "configure" => "Configure",
+    "port_trafic" => "Switches",
 ];
 
 function render(){

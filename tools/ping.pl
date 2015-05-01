@@ -6,7 +6,7 @@ require "/lcs/include/config.pm";
 
 # Connect to the database.
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
-$sql = "select * from switches WHERE ip IS NOT NULL";
+$sql = "select id,ip from switches WHERE ip IS NOT NULL";
 $sth = $dbh->prepare($sql);
 
 while(true) {

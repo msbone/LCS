@@ -64,3 +64,18 @@ CREATE TABLE IF NOT EXISTS `placements` (
   `y2` int(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Tabellstruktur for tabell `placements`
+--
+
+CREATE TABLE IF NOT EXISTS `ports` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `switch_id` int(12) NOT NULL,
+  `ifHighSpeed` int(8) NOT NULL,
+  `ifName` varchar(128) DEFAULT NULL,
+  `current_in` bigint(128) DEFAULT NULL,
+  `current_out` bigint(128) DEFAULT NULL,
+  `updated` int(32) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

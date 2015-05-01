@@ -2,7 +2,7 @@
 echo "Making stuff nice"
 
 sudo mkdir -p "/lcs/"
-apt-get -y install unzip libstring-random-perl libnetaddr-ip-perl  libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa libnet-oping-perl
+apt-get -y install unzip libstring-random-perl libnetaddr-ip-perl libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa libnet-oping-perl snmp librrds-perl rrdtool libsnmp-perl snmp-mibs-downloader
 cd "/lcs"
 echo "Downloading code....."
 wget https://github.com/msbone/lcs/archive/master.zip
@@ -35,6 +35,15 @@ cat > /etc/apache2/sites-available/000-default.conf << EOF
 EOF
 
 service apache2 restart
+
+#SETUP THE SNMP STUFF
+echo "CREATING SNMP CRONJOB"
+download-mibs
+mkdir /lcs/web/rrd
+
+cat > /etc/cron.d/lcs << EOF
+* * * * * root perl /lcs/tools/snmp_fetch.pl
+EOF
 
 
 #Make the hardlink for dns and dhcp key
