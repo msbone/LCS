@@ -43,6 +43,7 @@ mkdir /lcs/web/rrd
 
 cat > /etc/cron.d/lcs << EOF
 * * * * * root perl /lcs/tools/snmp_fetch.pl
+* * * * * root perl /lcs/tools/generate_graph.pl
 EOF
 
 
