@@ -12,7 +12,7 @@ include("database.php");
       $found = true;
     }
 if($found == false) {
-  echo "No ports found";
+  echo "No ports found, if the switch is just added, wait...";
 }
 } else {
   #LIST ALL GRAPH ON THAT PORT

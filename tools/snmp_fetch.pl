@@ -41,14 +41,35 @@ sub callback
 
   foreach my $key (keys %{$table}) {
     my $descr = $table->{$key}->{'ifName'};
-    $ifs{$descr} = $table->{$key};
+
+#JUNIPER
+if ($descr =~ m/(fe|ge|xe|et)-/ && $descr !~ m/\./) {
+$ifs{$descr} = $table->{$key};
+print $descr ."\n";
+}
+#Cisco
+if ($descr =~ m/^Gi[0-9]\/[0-9]/ || $descr =~ m/^Po[0-9]/) {
+$ifs{$descr} = $table->{$key};
+print $descr ."\n";
+}
+#Netgear
+if ($descr =~ m/^g[0-9]/ || $descr =~ m/^l[0-9]/) {
+$ifs{$descr} = $table->{$key};
+print $descr ."\n";
+}
+#linux eth
+if ($descr =~ m/^eth[0-9]/) {
+$ifs{$descr} = $table->{$key};
+print $descr ."\n";
+}
+
   }
 
   foreach my $key (keys %ifs) {
     my @vals = ();
     foreach my $val (@values) {
       if (!defined($ifs{$key}{$val})) {
-        die "Missing data \n";
+        print "Missing data $key\n";
       }
       push @vals, $ifs{$key}{$val};
     }

@@ -10,8 +10,9 @@ die();
 }
  ?>
 <link rel="stylesheet" href="/render/render.css">
+<div class="container-fluid">
 <p id="playground">
- <svg id="lines" width="1580" height="1032" style="position: absolute; top: 0; left: 0; z-index: 1">
+ <svg id="lines" width="1580" height="920" style="position: absolute; top: 0; left: 0; z-index: 1">
  </svg>
  <img src="/render/hype-kart.png" alt="" id="map" />
 </p>
@@ -23,3 +24,4 @@ die();
  var can_edit = true;
 </script>
 <script type="text/javascript" src="/render/render.js"></script>
+</div>
