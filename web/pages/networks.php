@@ -5,12 +5,10 @@ function mask2cidr($mask){
   $long = ip2long($mask);
   $base = ip2long('255.255.255.255');
   return 32-log(($long ^ $base)+1,2);
+}
 
-  /* xor-ing will give you the inverse mask,
-      log base 2 of that +1 will return the number
-      of bits that are off in the mask and subtracting
-      from 32 gets you the cidr notation */
-
+function cidrToRange($cidr) {
+  return $ip_count = 1 << (32 - $cidr);
 }
 
 #Grap all the networks
@@ -49,10 +47,19 @@ if($last_dhcp_timestamp >= $green) {
            echo "No dhcp here";
          }
  ?></div>
-      <?php if($row["dhcp"] == 1) { ?>
+      <?php if($row["dhcp"] == 1 AND ($row["last_dhcp_request"] != null or $row["last_dhcp_request"] != 0)) {
+        //Calculate dhcp lease size
+        $total = cidrToRange(mask2cidr($row["subnet"]));
+        $total = $total-3; #Remove id,router,broadcast.
+        $total = $total-$row["dhcp_reserved"]; #Remove reserved
+        //Get all the leases for this network
+        $sql2 = "SELECT a.id FROM dhcp_leases a WHERE network = '".$row["id"]."'";
+        $result2 = mysqli_query($con,$sql2);
+        $number = mysqli_num_rows($result2)
+        ?>
       <div class="progress">
-  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width: 10%; min-width: 3em;">
-    10%
+  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo $number; ?>" aria-valuemin="0" aria-valuemax="<?php echo $total; ?>" style="width: <?php echo 100/$total*$number; ?>%; min-width: 3em;">
+    <?php echo $number."/".$total; ?>
   </div>
 </div>
 <?php }?>
