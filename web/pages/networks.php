@@ -11,6 +11,8 @@ function cidrToRange($cidr) {
   return $ip_count = 1 << (32 - $cidr);
 }
 
+if(@$_GET["network"] == "") {
+
 #Grap all the networks
 $sql = "SELECT * FROM netlist WHERE in_use = 1";
 
@@ -70,4 +72,21 @@ if($last_dhcp_timestamp >= $green) {
 </a>
 
 <?php
+}
+}
+else {
+  #Grap the network
+  $sql = "SELECT * FROM netlist WHERE id = '".$_GET["network"]."'";
+
+  $result = mysqli_query($con,$sql);
+    while($row = mysqli_fetch_array($result))
+    {
+      echo "<h2> ".$row["name"]."<small> ".$row["network"]."/".mask2cidr($row["subnet"])." - ".$row["desc"];
+      echo ' <a href="#"><span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span> </a></small></h2>';
+      if($row["dhcp"]) {
+      echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-hour-2.png' alt='dhcp graph'> </div>";
+      echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-day-2.png' alt='dhcp graph'> </div>";
+      echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-week-2.png' alt='dhcp graph'> </div>";
+    }
+  }
 }

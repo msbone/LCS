@@ -2,7 +2,7 @@
 use DBI;
 use SNMP;
 use RRDs;
-
+SNMP::initMib();
 require "/lcs/include/config.pm";
 
 # Connect to the database.
@@ -11,7 +11,7 @@ $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,
 my @values = ('ifName','ifHighSpeed','ifHCOutOctets','ifHCInOctets');
 
 our $qswitch = $dbh->prepare(<<"EOF")
-select * from switches WHERE ip IS NOT NULL AND configured = '1'
+select * from switches WHERE ip IS NOT NULL AND configured = '1' AND latency_ms != 'NULL'
 EOF
   or die "Couldn't prepare qswitch";
 my @switches = ();
@@ -120,3 +120,20 @@ print $descr ."\n";
   }
   print "Added " . @switches. "\n";
   SNMP::MainLoop(5);
+
+  #All traffic in network
+  $epoc = time();
+  my $rrd_file = "/lcs/web/rrd/total-traffic.rrd";
+  unless (-e $rrd_file) {
+    RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:input:COUNTER:10080:U:U", "DS:output:COUNTER:10080:U:U", "RRA:AVERAGE:0.5:1:10080";
+    my $ERR=RRDs::error;
+die "ERROR while creating $rrd_file: $ERR\n" if $ERR;
+   }
+  $sql = "SELECT SUM(ports.current_in) AS total_in, SUM(ports.current_out) AS total_out
+  FROM ports";
+  $sth = $dbh->prepare($sql);
+
+  $sth->execute or die "SQL Error: $DBI::errstr\n";
+  while (my $ref = $sth->fetchrow_hashref()) {
+    RRDs::update $rrd_file, "-t", "input:output", "N:$ref->{'total_in'}:$ref->{'total_out'}";
+  }
