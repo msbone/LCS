@@ -125,7 +125,7 @@ print $descr ."\n";
   $epoc = time();
   my $rrd_file = "/lcs/web/rrd/total-traffic.rrd";
   unless (-e $rrd_file) {
-    RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:input:COUNTER:10080:U:U", "DS:output:COUNTER:10080:U:U", "RRA:AVERAGE:0.5:1:10080";
+    RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:input:GAUGE:10080:U:U", "DS:output:GAUGE:10080:U:U", "RRA:AVERAGE:0.5:1:10080";
     my $ERR=RRDs::error;
 die "ERROR while creating $rrd_file: $ERR\n" if $ERR;
    }
