@@ -24,6 +24,8 @@ while (my $ref = $sth2->fetchrow_hashref()) {
 
 #Totalt inet graph
 CreateGraph_inet("total-traffic","hour","Total traffic","2");
+CreateGraph_inet("total-traffic","day","Total traffic","2");
+CreateGraph_inet("total-traffic","week","Total traffic","2");
 
 $sql = "select id, network, subnet, name FROM netlist WHERE dhcp = 1";
 $sth = $dbh->prepare($sql);
