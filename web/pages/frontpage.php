@@ -2,14 +2,15 @@
 <div class="row">
   <div class="col-md-7">
     <div class="well well-sm">
-      <h5><strong> Top 10 ports in network</strong> </h5>
+      <h5><strong> Top 15 ports in network</strong> </h5>
 <div class="table-responsive">
   <table class="table table-bordered">
     <tr>
       <th>Port</th>
       <th>Switch</th>
-      <th>Bytes in per sec</th>
-      <th>Bytes out per sec</th>
+      <th>In</th>
+      <th>Out</th>
+      <th>Total</th>
 </tr>
 <?php
 /**
@@ -45,15 +46,16 @@ function bytesToSize($bytes, $precision = 2)
 }
 
 include("database.php");
-$sql = "SELECT switches.name, ports.ifName, ports.current_in, ports.current_out, (ports.current_in + ports.current_out) AS total FROM ports JOIN switches WHERE ports.switch_id = switches.id ORDER BY total DESC LIMIT 10";
+$sql = "SELECT switches.name, ports.ifName,switches.id AS swid, ports.id AS ifid, ports.current_in, ports.current_out, (ports.current_in + ports.current_out) AS total FROM ports JOIN switches WHERE ports.switch_id = switches.id ORDER BY total DESC LIMIT 15";
 $result = mysqli_query($con,$sql);
   while($row = mysqli_fetch_array($result))
   { ?>
 <tr>
-  <td><?php echo $row["ifName"]; ?></td>
-  <td><?php echo $row["name"]; ?></td>
+  <td><a href="/index.php?page=port_traffic&id=<?php echo $row["ifid"]; ?>"><?php echo $row["ifName"]; ?></a></td>
+  <td><a href="/index.php?page=port_traffic&switch=<?php echo $row["swid"]; ?>"><?php echo $row["name"]; ?></a></td>
   <td><?php echo bytesToSize($row["current_in"]); ?>/s</td>
   <td><?php echo bytesToSize($row["current_out"]); ?>/s</td>
+  <td><?php echo bytesToSize($row["total"]); ?>/s</td>
 </tr>
 <?php } ?>
   </table>

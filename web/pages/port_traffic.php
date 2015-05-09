@@ -3,6 +3,14 @@ include("database.php");
 
  if (@$_GET["id"] == null or @$_GET["id"] == "") {
   #LIST ALL PORTS ON SWITCH, WITH DAY GRAPH
+  $sql = "SELECT switches.name FROM switches WHERE switches.id = '".$_GET["switch"]."'";
+  $result = mysqli_query($con,$sql);
+  $found = false;
+    while($row = mysqli_fetch_array($result))
+    {
+      echo "<h2><small>".$row["name"]."</small></h2>";
+    }
+
   $sql = "SELECT ports.id,switches.name,ports.ifName FROM ports JOIN switches WHERE ports.switch_id = switches.id AND switches.id = '".$_GET["switch"]."' ORDER BY LENGTH(ports.ifName), ports.ifName";
   $result = mysqli_query($con,$sql);
   $found = false;
@@ -21,6 +29,7 @@ if($found == false) {
   $found = false;
     while($row = mysqli_fetch_array($result))
     {
+      echo "<h2><small>".$row["name"]." - ".$row["ifName"]."</small></h2>";
       echo '<div class="col-md-6"> <img class="img-responsive" src="/rrd/'.$row["id"].'-hour-2.png" alt="'.$row["name"]." - ".$row["ifName"].'"></div>';
       echo '<div class="col-md-6"> <img class="img-responsive" src="/rrd/'.$row["id"].'-day-2.png" alt="'.$row["name"]." - ".$row["ifName"].'"></div>';
       echo '<div class="col-md-6"> <img class="img-responsive" src="/rrd/'.$row["id"].'-week-2.png" alt="'.$row["name"]." - ".$row["ifName"].'"></div>';

@@ -49,7 +49,7 @@ $end_date_time = timelocal($sec,$min,$hour,$mday,$mon-1,$year);
         if ($readit && $line=~/^}/){
                 $end_date_time = $end_date_time + 7200;
                 $start_date_time = $start_date_time + 7200;
-                $epoc = time() -3600;
+                $epoc = time();
                 if($epoc < $end_date_time) {
                   $sql = "select id, network, subnet FROM netlist WHERE dhcp = 1";
                   $sth = $dbh->prepare($sql);

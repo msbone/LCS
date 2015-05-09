@@ -130,7 +130,7 @@ function rgb_from_latency(latency_ms) {
   }
 
   // 10ms is max //NOT SURE HOW THIS WORKS
-  var l = latency_ms;
+  var l = latency_ms / 50;
   if (l >= 2.0) {
     return 'rgb(255, 0, 0)';
   } else if (l >= 1.0) {

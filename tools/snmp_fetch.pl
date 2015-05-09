@@ -8,10 +8,10 @@ require "/lcs/include/config.pm";
 # Connect to the database.
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
 
-my @values = ('ifName','ifHighSpeed','ifHCOutOctets','ifHCInOctets');
+my @values = ('ifName','ifHighSpeed','ifHCOutOctets','ifHCInOctets', 'ifIndex');
 
 our $qswitch = $dbh->prepare(<<"EOF")
-select * from switches WHERE ip IS NOT NULL AND configured = '1' AND latency_ms != 'NULL'
+select * from switches WHERE ip IS NOT NULL AND configured = '1' AND latency_ms != 'NULL' AND snmp_version != 'null'
 EOF
   or die "Couldn't prepare qswitch";
 my @switches = ();
@@ -27,7 +27,8 @@ sub populate_switches
       'sysname' => $ref->{'name'},
       'id' => $ref->{'id'},
       'mgtip' => $ref->{'ip'},
-      'community' => "hjemmesnmp"
+      'community' => "hjemmesnmp",
+      'version' => $ref->{'snmp_version'}
     };
   }
 }
@@ -45,24 +46,31 @@ sub callback
 #JUNIPER
 if ($descr =~ m/(fe|ge|xe|et)-/ && $descr !~ m/\./) {
 $ifs{$descr} = $table->{$key};
-print $descr ."\n";
+#print $descr ."\n";
 }
 #Cisco
-if ($descr =~ m/^Gi[0-9]\/[0-9]/ || $descr =~ m/^Po[0-9]/) {
+elsif ($descr =~ m/^Gi[0-9]\/[0-9]/ || $descr =~ m/^Po[0-9]/) {
 $ifs{$descr} = $table->{$key};
-print $descr ."\n";
+#print $descr ."\n";
 }
 #Netgear
-if ($descr =~ m/^g[0-9]/ || $descr =~ m/^l[0-9]/) {
+elsif ($descr =~ m/^g[0-9]/ || $descr =~ m/^l[0-9]/) {
 $ifs{$descr} = $table->{$key};
-print $descr ."\n";
+#print $descr ."\n";
 }
 #linux eth
-if ($descr =~ m/^eth[0-9]/) {
+elsif ($descr =~ m/^eth[0-9]/ && $descr !~ m/\./) {
 $ifs{$descr} = $table->{$key};
-print $descr ."\n";
+#print $descr ."\n";
 }
-
+#linux eth
+elsif ($descr =~ m/^switch[0-9]/) {
+$ifs{$descr} = $table->{$key};
+#print $descr ."\n";
+}
+else {
+  print "Port not added: ".$descr ."\n";  
+}
   }
 
   foreach my $key (keys %ifs) {
@@ -89,7 +97,7 @@ print $descr ."\n";
       #UPDATE THE DATABASE WITH THE LASTEST DATA
       my ($start,$step,$names,$data) = RRDs::fetch $rrd_file, "AVERAGE","--start","-60";
       for my $line (@$data) {
-        $dbh->do("UPDATE `ports` SET `ifHighSpeed` =  $vals[1],`current_in` =  '@$line[0]',`current_out` =  '@$line[1]',`updated` =  '$start' WHERE  `id` =$id");
+        $dbh->do("UPDATE `ports` SET `ifHighSpeed` =  '$vals[1]',`current_in` =  '@$line[0]',`current_out` =  '@$line[1]',`updated` =  '$start' WHERE  `id` ='$id'");
         last();
       }
     }
@@ -97,7 +105,7 @@ print $descr ."\n";
     if($sth2->rows == 0) {
       #ADD
       $epoc = time();
-      $dbh->do("INSERT INTO `ports` (switch_id,ifName) VALUES ('$switch{'id'}', '$vals[0]')");
+      $dbh->do("INSERT INTO `ports` (switch_id,ifName,ifIndex) VALUES ('$switch{'id'}', '$vals[0]','$vals[4]')");
       my $rrd_file = "/lcs/web/rrd/$dbh->{mysql_insertid}.rrd";
       RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:input:COUNTER:10080:U:U", "DS:output:COUNTER:10080:U:U", "RRA:AVERAGE:0.5:1:10080";
       my $ERR=RRDs::error;
@@ -115,7 +123,7 @@ print $descr ."\n";
     $switch{'start'} = time;
     my $s = new SNMP::Session(DestHost => $switch{'mgtip'},
             Community => $switch{'community'},
-            Version => '2');
+            Version => $switch{'version'});
     $s->gettable('ifXTable',callback => [\&callback, \%switch]);
   }
   print "Added " . @switches. "\n";
