@@ -48,3 +48,6 @@ web/.idea/scopes/scope_settings.xml
 .bin
 /include/config.pm
 /dlinkac/dlink_log.txt
+/web/rrd/*
+.rrd
+/old_backup/*
