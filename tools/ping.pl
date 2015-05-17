@@ -35,6 +35,7 @@ my $result = $ping->ping();
     print "Switch: $switch : $latency \n";
     $epoc = time();
     $dbh->do("UPDATE  `switches` SET  `latency_ms` =  $latency,`updated` =  '$epoc' WHERE  `id` =$switch");
+    $dbh->do("INSERT INTO  `lcs`.`switches_ping` (`switch` , `updated` , `latency_ms`) VALUES ( '$switch',  '$epoc',  $latency )");
   }
   sleep (1);
 }

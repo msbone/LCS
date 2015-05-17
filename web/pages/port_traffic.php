@@ -16,7 +16,7 @@ include("database.php");
   $found = false;
     while($row = mysqli_fetch_array($result))
     {
-      echo '<div class="col-md-6"><a href="/index.php?page=port_traffic&switch='.$_GET["switch"].'&id='.$row["id"].'"> <img class="img-responsive" src="/rrd/'.$row["id"].'-hour-2.png" alt="'.$row["name"]." - ".$row["ifName"].'"></a></div>';
+      echo '<div class="col-md-6"><a href="/index.php?page=port_traffic&switch='.$_GET["switch"].'&id='.$row["id"].'"> <img class="img-responsive" src="/graph/make_port_graph.php?port='.$row["id"].'" alt="'.$row["name"]." - ".$row["ifName"].'"></a></div>';
       $found = true;
     }
 if($found == false) {
