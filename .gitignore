@@ -51,3 +51,4 @@ web/.idea/scopes/scope_settings.xml
 /web/rrd/*
 .rrd
 /old_backup/*
+deployment-config.json
