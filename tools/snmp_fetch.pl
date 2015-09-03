@@ -8,7 +8,7 @@ SNMP::initMib();
 require "/lcs/include/config.pm";
 
 # Connect to the database.
-$dbh = DBI->connect("dbi:mysql:$lcs::config::db_name","root","Dataparty15") or die "Connection Error: $DBI::errstr\n";
+$dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
 
 #Clean the database of dead switches
 our $deadswitch = $dbh->prepare(<<"EOF")
@@ -181,8 +181,6 @@ elsif($switch{'model'} eq "edgerouter") {
 push @vars, [ "ssCpuUser", 0];
 }
 my $varlist = SNMP::VarList->new(@vars);
-
-print Dumper($s->gettable('ifTable'));
 
     #Henter switch info
     $s->get($varlist, [ \&syscall, \%switch ]);
