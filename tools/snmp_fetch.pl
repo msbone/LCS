@@ -1,14 +1,14 @@
 #!/usr/bin/perl
 use DBI;
 use SNMP;
-use RRDs;
 use Time::HiRes qw(time);
 use POSIX qw(strftime);
+ use Data::Dumper;
 SNMP::initMib();
 require "/lcs/include/config.pm";
 
 # Connect to the database.
-$dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
+$dbh = DBI->connect("dbi:mysql:$lcs::config::db_name","root","Dataparty15") or die "Connection Error: $DBI::errstr\n";
 
 #Clean the database of dead switches
 our $deadswitch = $dbh->prepare(<<"EOF")
@@ -22,9 +22,7 @@ EOF
   while (my $ref = $deadswitch->fetchrow_hashref()) {
     my $id = $ref->{'id'};
     my $swid = $ref->{'swid'};
-    my $rrd_file = "/lcs/web/rrd/$id.rrd";
     $epoc = time();
-    RRDs::update $rrd_file, "-t", "input:output", "N:U:U";
     $dbh->do("UPDATE `ports` SET `ifHighSpeed` =  NULL,`current_in` =  NULL,`current_out` =  NULL,`updated` =  '$epoc' WHERE  `id` ='$id'");
     $dbh->do("UPDATE `switches` SET `cpu_use` =  NULL,`uptime` =  NULL,`updated` =  '$epoc' WHERE  `id` ='$swid'");
   }
@@ -85,6 +83,7 @@ sub syscall
 else {
   $dbh->do("UPDATE `switches` SET `desc` =  '$sysdescr',`cpu_use` =  NULL,`uptime` =  '$uptime' WHERE  `id` ='$id'");
 }
+print "DONE WITH SYSCALL! \n";
 }
 
 sub callback
@@ -145,13 +144,10 @@ else {
       my $id = $ref->{'id'};
       my $sw_id = $ref->{'swid'};
       my $switch_name = $ref->{'name'};
-      my $rrd_file = "/lcs/web/rrd/$id.rrd";
 
       $epoc = time();
-      RRDs::update $rrd_file, "-t", "input:output", "N:$vals[3]:$vals[2]";
       $dbh->do("INSERT INTO `lcs`.`ports_poll` (`time`, `switch`, `port`, `bytes_in`, `bytes_out`) VALUES ($epoc, '$sw_id', '$id', '$vals[3]', '$vals[2]');");
       #UPDATE THE DATABASE WITH THE LASTEST DATA
-      my ($start,$step,$names,$data) = RRDs::fetch $rrd_file, "AVERAGE","--start","-60";
       for my $line (@$data) {
         $dbh->do("UPDATE `ports` SET `ifHighSpeed` =  '$vals[1]',`current_in` =  '@$line[0]',`current_out` =  '@$line[1]',`updated` =  '$start' WHERE  `id` ='$id'");
         last();
@@ -162,11 +158,6 @@ else {
       #ADD
       $epoc = time();
       $dbh->do("INSERT INTO `ports` (switch_id,ifName,ifIndex) VALUES ('$switch{'id'}', '$vals[0]','$vals[4]')");
-      my $rrd_file = "/lcs/web/rrd/$dbh->{mysql_insertid}.rrd";
-      RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:input:COUNTER:10080:U:U", "DS:output:COUNTER:10080:U:U", "RRA:AVERAGE:0.5:1:10080";
-      my $ERR=RRDs::error;
- die "ERROR while creating $rrd_file: $ERR\n" if $ERR;
-      RRDs::update $rrd_file, "-t", "input:output", "N:$vals[3]:$vals[2]";
     }
   }
   print "STOP: Polling $switch{'sysname'} took " . (time - $switch{'start'}) . "s \n";
@@ -190,6 +181,9 @@ elsif($switch{'model'} eq "edgerouter") {
 push @vars, [ "ssCpuUser", 0];
 }
 my $varlist = SNMP::VarList->new(@vars);
+
+print Dumper($s->gettable('ifTable'));
+
     #Henter switch info
     $s->get($varlist, [ \&syscall, \%switch ]);
     #Henter port info

@@ -11,8 +11,8 @@ $sth = $dbh->prepare($sql);
 
 while(true) {
   $ping = Net::Oping->new;
-  $ping->timeout(0.2);
-  $ping->ttl(8);
+  $ping->timeout(1.0);
+  $ping->ttl(22);
 
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 
@@ -31,11 +31,10 @@ my $result = $ping->ping();
     next if (!defined($switch));
 
     $latency //= "NULL";
-
-    print "Switch: $switch : $latency \n";
-    $epoc = time();
+$epoc = time();
+    print "Switch: $switch : $latency at $epoc\n";
     $dbh->do("UPDATE  `switches` SET  `latency_ms` =  $latency,`updated` =  '$epoc' WHERE  `id` =$switch");
     $dbh->do("INSERT INTO  `lcs`.`switches_ping` (`switch` , `updated` , `latency_ms`) VALUES ( '$switch',  '$epoc',  $latency )");
   }
-  sleep (1);
+  sleep (2);
 }
