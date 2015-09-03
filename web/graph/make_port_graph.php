@@ -66,7 +66,11 @@ $port_info = $row["ifName"]." - ".$row["name"];
 }
 
 if(mysqli_num_rows($result) <= 2) {
-  die("CAN NOT MAKE GRAPH, NO DATA");
+$myPicture = new pImage(681,244,$myData);
+$myPicture->setFontProperties(array("FontName"=>"pChart2.1.4/fonts/SourceCodePro-Light.ttf","FontSize"=>20));
+$myPicture->drawText(30,40,"NO DATA TO MAKE THE GRAPH!");
+$myPicture->Stroke();
+  die();
 }
 
 $bytes_in_max = bytesToSize(max($bits_in));

@@ -229,7 +229,7 @@ if (can_edit) {
     if (dragging_switch === null) {
       return;
     }
-    var x = e.clientX + delta_x - 357;
+    var x = e.clientX + delta_x - 373;
     var y = e.clientY + delta_y - 139;
 
     var request = new XMLHttpRequest();

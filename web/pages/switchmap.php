@@ -14,7 +14,7 @@ die();
 <p id="playground">
  <svg id="lines" width="1580" height="920" style="position: absolute; top: 0; left: 0; z-index: 1">
  </svg>
- <img src="/render/hype-kart.png" alt="" id="map" />
+ <img src="/render/vlan15.png" alt="" id="map" />
 </p>
 <script>
  // These are used by ping.js, below.
