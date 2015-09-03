@@ -5,6 +5,8 @@ public $pages = [
     "switchmap" => "switches",
     "switches" => "switches",
     "port_traffic" => "switches",
+    "networks" => "networks",
+    "master_network" => "networks",
 ];
 
 function render(){
