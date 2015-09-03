@@ -1,5 +1,5 @@
 <ul class="nav nav-sidebar">
-  <li <?php if(@$_GET["switch"] == "new") {echo 'class="active"';}?>><a href="/index.php?page=switches&switch=new">Create a new switch</a></li>
+  <li <?php if(@$_GET["switch"] == "new") {echo 'class="active"';}?>><a href="/index.php?page=switches-create">Create a new switch</a></li>
 </ul>
 <ul class="nav nav-sidebar">
   <li <?php if($_GET["page"] == "switchmap") {echo 'class="active"';}?>><a href="/index.php?page=switchmap">Ping map</a></li>

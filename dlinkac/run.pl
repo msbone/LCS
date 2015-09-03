@@ -15,7 +15,16 @@ stuff->log(message => "Started run.pl");
 
 #THE SCRIPT OF ALL SCRIPTS
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
-$sql = "select netlist.subnet, netlist.id AS netid, netlist.vlan, switches.*, coreswitches.name AS distroname, coreswitches.model AS distromodel, coreswitches.ip as distroip from switches JOIN coreswitches, netlist WHERE netlist.id = switches.net_id AND switches.distro_id = coreswitches.id AND switches.model = 'dgs24' AND switches.configured = 0 ORDER BY switches.distro_id, switches.distro_port";
+$sql = "SELECT netlist.subnet, netlist.id AS netid, netlist.vlan, switches.*, coreswitches.name AS distroname, coreswitches.model AS distromodel, coreswitches.ip AS distroip
+FROM switches
+JOIN switches AS coreswitches, netlist
+WHERE netlist.id = switches.net_id
+AND switches.connected_to = coreswitches.id
+AND switches.configured =0
+AND coreswitches.type = 2
+ORDER BY switches.connected_to, switches.connected_port
+LIMIT 0 , 30";
+
 
 $sth = $dbh->prepare($sql);
 $sth->execute or die "SQL Error: $DBI::errstr\n";

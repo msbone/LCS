@@ -81,12 +81,21 @@ else {
   $result = mysqli_query($con,$sql);
     while($row = mysqli_fetch_array($result))
     {
-      echo "<h2> ".$row["name"]."<small> ".$row["network"]."/".mask2cidr($row["subnet"])." - ".$row["desc"];
-      echo ' <a href="#"><span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span> </a></small></h2>';
+      echo "<h2> ".$row["name"]."<small> ".$row["network"]."/".mask2cidr($row["subnet"])." - ".$row["desc"] ."</h2>";
       if($row["dhcp"]) {
       echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-hour-2.png' alt='dhcp graph'> </div>";
       echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-day-2.png' alt='dhcp graph'> </div>";
       echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-week-2.png' alt='dhcp graph'> </div>";
+      echo "<br/>";
     }
+    echo '<table class="table table-striped table-bordered table-hover">';
+    if($row["dhcp"]) {
+      echo '<tr> <td class="col-md-2"> DHCP:</td><td> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> </td> </tr>';
+      echo '<tr> <td class="col-md-2"> DHCP-reserved:</td><td>'.$row["dhcp_reserved"].'</td> </tr>';
+    } else {
+    echo '<tr> <td class="col-md-2"> DHCP:</td><td> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> </td> </tr>';
+    }
+    echo '<tr> <td class="col-md-2"> VLAN:</td><td> '.$row["vlan"].' </td> </tr>';
+    echo '</table>';
   }
 }
