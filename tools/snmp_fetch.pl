@@ -146,12 +146,22 @@ else {
       my $switch_name = $ref->{'name'};
 
       $epoc = time();
-      $dbh->do("INSERT INTO `lcs`.`ports_poll` (`time`, `switch`, `port`, `bytes_in`, `bytes_out`) VALUES ($epoc, '$sw_id', '$id', '$vals[3]', '$vals[2]');");
+
       #UPDATE THE DATABASE WITH THE LASTEST DATA
-      for my $line (@$data) {
-        $dbh->do("UPDATE `ports` SET `ifHighSpeed` =  '$vals[1]',`current_in` =  '@$line[0]',`current_out` =  '@$line[1]',`updated` =  '$start' WHERE  `id` ='$id'");
-        last();
+      $sql3 = "SELECT ports_poll.bytes_in, ports_poll.bytes_out, ports_poll.time FROM `lcs`.`ports_poll` WHERE ports_poll.port = $id ORDER BY time DESC LIMIT 1";
+      $sth3 = $dbh->prepare($sql3);
+      $sth3->execute or die "SQL Error: $DBI::errstr\n";
+
+      while (my $ref = $sth3->fetchrow_hashref()) {
+
+$time_gone =  $epoc - int($ref->{'time'});
+$current_bytes_in =  ($vals[3] - int(($ref->{'bytes_in'}))) / $time_gone;
+$current_bytes_out = ($vals[2] - int(($ref->{'bytes_out'}))) / $time_gone;
+
+$dbh->do("UPDATE `ports` SET `current_in` =  '$current_bytes_in',`current_out` =  '$current_bytes_out',`updated` =  '$epoc' WHERE  `id` ='$id'");
       }
+
+      $dbh->do("INSERT INTO `lcs`.`ports_poll` (`time`, `switch`, `port`, `bytes_in`, `bytes_out`) VALUES ($epoc, '$sw_id', '$id', '$vals[3]', '$vals[2]')");
     }
 
     if($sth2->rows == 0) {

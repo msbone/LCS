@@ -1,8 +1,7 @@
 <?php
-
-if(@$_GET["port"] == "") {
-  die("NO PORT SET");
-}
+/*
+SELECT SUM( bytes_in ) , SUM( bytes_out ) , TIME FROM  `ports_poll` WHERE FROM_UNIXTIME( TIME ) > DATE_SUB( CURDATE( ) , INTERVAL 60 MINUTE ) GROUP BY MINUTE( FROM_UNIXTIME( TIME ) )  LIMIT 0 , 59
+*/
 
 $kilobyte = 1024;
 $megabyte = $kilobyte * 1024;
@@ -12,9 +11,9 @@ $terabyte = $gigabyte * 1024;
 function bytesToSize($bytes)
 {
   $kilobyte = 1024;
-  $megabyte = $kilobyte * 1024 / 8;
-  $gigabyte = $megabyte * 1024 / 8;
-  $terabyte = $gigabyte * 1024 / 8;
+  $megabyte = $kilobyte * 1024;
+  $gigabyte = $megabyte * 1024;
+  $terabyte = $gigabyte * 1024;
 
     if (($bytes >= 0) && ($bytes < $kilobyte)) {
         return 0;
@@ -46,23 +45,24 @@ $myData = new pData();
 
 #$sql = "select latency_ms,updated from switches_ping WHERE updated >= ( UNIX_TIMESTAMP( NOW( ) ) - 50 ) AND switch = 2";
 #$sql = "SELECT AVG(latency_ms), HOUR(from_unixtime(updated)), DATE(from_unixtime(updated)) FROM switches_ping WHERE DATE_SUB(from_unixtime(updated),INTERVAL 1 HOUR) AND updated >= ( UNIX_TIMESTAMP( NOW( ) ) - 86400 ) AND latency_ms IS NOT NULL GROUP BY DATE( from_unixtime(updated) ), HOUR(from_unixtime(updated)) ORDER BY updated ASC";
-$sql = "SELECT ports_poll.bytes_in, ports_poll.bytes_out, ports_poll.time, switches.name, ports.ifName FROM ports_poll JOIN ports, switches WHERE ports.id = ports_poll.port AND switches.id = ports_poll.switch AND  time >= ( UNIX_TIMESTAMP( NOW( ) ) - 3600 ) AND port = '".$_GET["port"]."'";
+#$sql = "SELECT ports_poll.bytes_in, ports_poll.bytes_out, ports_poll.time, switches.name, ports.ifName FROM ports_poll JOIN ports, switches WHERE ports.id = ports_poll.port AND switches.id = ports_poll.switch AND  time >= ( UNIX_TIMESTAMP( NOW( ) ) - 3600 ) AND port = '".$_GET["port"]."'";
+$sql = "SELECT SUM( bytes_in ) AS bytes_in , SUM( bytes_out ) AS bytes_out , `time` FROM  `ports_poll` WHERE time >= ( UNIX_TIMESTAMP( NOW( ) ) - 3600 ) GROUP BY MINUTE( FROM_UNIXTIME( `time` ) ) ORDER BY `time` LIMIT 0 , 60";
 $result = mysqli_query($con,$sql);
   while($row = mysqli_fetch_array($result))
   {
     if(@$pre_timestamp != "") {
-      $time_gone = $row["time"]-$pre_timestamp;
+      $time_gone = "100";
       $current_bytes_in = ($row["bytes_in"] - $pre_bytes_in) / $time_gone;
       $current_bytes_out = ($row["bytes_out"] - $pre_bytes_out) / $time_gone;
           $timestamp[]   = date("H:i",$row["time"]);
-          $bits_in[] = $current_bytes_in;
+          $bits_in[] = $current_bytes_in + $current_bytes_out;
           $bits_out[] = $current_bytes_out;
     }
     $pre_timestamp = $row["time"];
     $pre_bytes_in = $row["bytes_in"];
     $pre_bytes_out = $row["bytes_out"];
 
-$port_info = $row["ifName"]." - ".$row["name"];
+$port_info = "Total traffic";
 }
 
 if(mysqli_num_rows($result) <= 2) {
@@ -137,19 +137,16 @@ foreach ($bits_in as &$value) {
 
 */
 /* Save the data in the pData array*/
+
 if(@$_GET["big"] == 1) {
 $myData->addPoints($timestamp,"Timestamp");
 $myData->addPoints($bits_in,"bits_in");
-$myData->addPoints($bits_out,"bits_out");
+#$myData->addPoints($bits_out,"bits_out");
 $myData->setAbscissa("Timestamp");
 $myData->setAxisName(0,$size);
 $serieSettings = array("R"=>5,"G"=>190,"B"=>213,"Alpha"=>100);
 $myData->setPalette("bits_in",$serieSettings);
 $myData->setSerieWeight("bits_in",2);
-$serieSettings = array("R"=>141,"G"=>72,"B"=>171,"Alpha"=>100);
-$myData->setPalette("bits_out",$serieSettings);
-$myData->setSerieWeight("bits_out",2);
-
 $myPicture = new pImage(1362,488,$myData);
 $myPicture->drawFilledRectangle(00,00,1362,488,array("R"=>67,"G"=>74,"B"=>84));
 $myPicture->setFontProperties(array("FontName"=>"pChart2.1.4/fonts/SourceCodePro-Light.ttf","FontSize"=>16,"R"=>227,"G"=>231,"B"=>236));
@@ -161,7 +158,7 @@ $myPicture->Stroke();
 } else {
   $myData->addPoints($timestamp,"Timestamp");
   $myData->addPoints($bits_in,"bits_in");
-  $myData->addPoints($bits_out,"bits_out");
+  #$myData->addPoints($bits_out,"bits_out");
   $myData->setAbscissa("Timestamp");
   $myData->setAxisName(0,$size);
 

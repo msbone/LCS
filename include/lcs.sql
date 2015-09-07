@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Vert: localhost
--- Generert den: 01. Sep, 2015 16:06 PM
--- Tjenerversjon: 5.5.43-0ubuntu0.14.04.1
--- PHP-Versjon: 5.5.9-1ubuntu4.9
+-- Generert den: 07. Sep, 2015 04:02 AM
+-- Tjenerversjon: 5.5.44-0ubuntu0.14.04.1
+-- PHP-Versjon: 5.5.9-1ubuntu4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -57,15 +57,16 @@ CREATE TABLE IF NOT EXISTS `netlist` (
   `network` varchar(16) NOT NULL,
   `subnet` varchar(16) NOT NULL,
   `vlan` int(12) DEFAULT NULL,
-  `coreswitch` int(12) NOT NULL,
+  `coreswitch` int(12) DEFAULT NULL,
   `dhcp` int(1) DEFAULT '0',
   `dhcp_reserved` varchar(12) DEFAULT '0',
   `last_dhcp_request` varchar(32) DEFAULT '0',
   `desc` varchar(64) DEFAULT NULL,
   `in_use` int(1) DEFAULT '1',
+  `master` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=103 ;
 
 -- --------------------------------------------------------
 
@@ -81,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `placements` (
   `x2` int(32) NOT NULL,
   `y2` int(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
 
 -- --------------------------------------------------------
 
@@ -100,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `ports` (
   `current_out` bigint(128) DEFAULT NULL,
   `updated` int(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
 
 -- --------------------------------------------------------
 
@@ -133,13 +134,14 @@ CREATE TABLE IF NOT EXISTS `switches` (
   `net_id` int(12) DEFAULT NULL,
   `configured` int(1) DEFAULT '0',
   `type` int(2) DEFAULT '1',
-  `connected_to` int(64) DEFAULT NULL,
-  `updated` varchar(32) NOT NULL,
+  `connected_to` int(12) DEFAULT NULL,
+  `connected_port` int(12) DEFAULT NULL,
+  `updated` varchar(32) DEFAULT NULL,
   `latency_ms` double DEFAULT NULL,
   `cpu_use` int(3) DEFAULT NULL,
   `uptime` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
 
 -- --------------------------------------------------------
 

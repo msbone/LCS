@@ -126,7 +126,7 @@ function gradient_from_latency(latency_ms, latency_secondary_ms) {
 
 function rgb_from_latency(latency_ms) {
   if (latency_ms == null || latency_ms === undefined) {
-    return '#0000ff';
+    return '#00ffff';
   }
 
   // 10ms is max //NOT SURE HOW THIS WORKS
@@ -157,7 +157,7 @@ function really_update_ping(json) {
                  json['switches'][switchnum]['latency_secondary']);
         }
       } else {
-        switches[switchnum].style.background = '#0000ff';
+        switches[switchnum].style.background = '#00ffff';
       }
     }
   }
@@ -180,9 +180,9 @@ function create_switch(switchnum, sysname, x, y, zorder, width, height) {
   s.style.top = (top_offset + y) + 'px';
   s.style.width = width + 'px';
   s.style.height = height + 'px';
-  s.style.backgroundColor = '#0000ff';
+  s.style.backgroundColor = '#0099ff';
   s.style.border = '1px solid black';
-  s.style.padding = "0";
+  s.style.padding = "3px";
   s.style.zIndex = zorder + 100;
   switches[switchnum] = s;
 
