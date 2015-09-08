@@ -26,7 +26,7 @@ $serieSettings = array("R"=>229,"G"=>11,"B"=>11,"Alpha"=>100);
 $myData->setPalette("latency_ms",$serieSettings);
 
 $myPicture = new pImage(1920,1000,$myData);
-$myPicture->setFontProperties(array("FontName"=>"pChart2.1.4/fonts/Forgotte.ttf","FontSize"=>11));
+$myPicture->setFontProperties(array("FontName"=>"pChart2.1.4/fonts/SourceCodePro-Light.ttf","FontSize"=>10));
 $myPicture->setGraphArea(60,40,1900,900);
 $myPicture->drawScale();
 $myPicture->drawSplineChart();

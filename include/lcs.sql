@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Vert: localhost
--- Generert den: 07. Sep, 2015 04:02 AM
+-- Generert den: 09. Sep, 2015 00:06 AM
 -- Tjenerversjon: 5.5.44-0ubuntu0.14.04.1
 -- PHP-Versjon: 5.5.9-1ubuntu4.11
 
