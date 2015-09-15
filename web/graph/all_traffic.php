@@ -150,7 +150,7 @@ $myData->setSerieWeight("bits_in",2);
 $myPicture = new pImage(1362,488,$myData);
 $myPicture->drawFilledRectangle(00,00,1362,488,array("R"=>67,"G"=>74,"B"=>84));
 $myPicture->setFontProperties(array("FontName"=>"pChart2.1.4/fonts/SourceCodePro-Light.ttf","FontSize"=>16,"R"=>227,"G"=>231,"B"=>236));
-$myPicture->setGraphArea(60,40,1362,400);
+$myPicture->setGraphArea(80,60,1362,400);
 $myPicture->drawScale(array("Mode"=>SCALE_MODE_START0,"LabelSkip"=>4));
 $myPicture->drawLineChart();
 #header('Content-Type: image/png');

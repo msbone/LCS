@@ -7,19 +7,19 @@ function bytesToSize($bytes, $precision = 2)
     $terabyte = $gigabyte * 1024;
 
     if (($bytes >= 0) && ($bytes < $kilobyte)) {
-        return $bytes . ' B';
+        return $bytes . ' b';
 
     } elseif (($bytes >= $kilobyte) && ($bytes < $megabyte)) {
-        return round($bytes / $kilobyte, $precision) . ' KB';
+        return round($bytes / $kilobyte, $precision) . ' Kb';
 
     } elseif (($bytes >= $megabyte) && ($bytes < $gigabyte)) {
-        return round($bytes / $megabyte, $precision) . ' MB';
+        return round($bytes / $megabyte, $precision) . ' Mb';
 
     } elseif (($bytes >= $gigabyte) && ($bytes < $terabyte)) {
-        return round($bytes / $gigabyte, $precision) . ' GB';
+        return round($bytes / $gigabyte, $precision) . ' Gb';
 
     } elseif ($bytes >= $terabyte) {
-        return round($bytes / $terabyte, $precision) . ' TB';
+        return round($bytes / $terabyte, $precision) . ' Tb';
     } else {
         return $bytes . ' B';
     }
@@ -34,7 +34,7 @@ $result = mysqli_query($con,$sql);
   while($row = mysqli_fetch_array($result))
   {
     echo '<h1 class="text-light-grey text-center">Totalt traffic right now <br /> <small style="font-size: 80px;" class="text-light-grey">';
-echo "".bytesToSize($row["inn"] + $row["ut"]) . "/s </small> <br />";
+echo "".bytesToSize(($row["inn"]*8) + ($row["ut"]*8)) . "/s </small> <br />";
 }
 echo "<img class='responsive' src='/graph/all_traffic.php?big=1&rnd=".time()."'>";
 ?>

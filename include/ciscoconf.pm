@@ -30,8 +30,8 @@ my %args = @_;
 $session->cmd("clear arp-cache");
 #GO TO CONF MODE FOR THIS PORT
 $session->cmd("conf t");
-$session->cmd("default interface gigabit 0/".$args{port});
-$session->cmd("interface gigabit 0/".$args{port});
+$session->cmd("default interface gigabit ".$args{port});
+$session->cmd("interface gigabit ".$args{port});
 $session->cmd("no shutdown");
 #TURN OFF SWITCHPORT
 $session->cmd("no switchport");
@@ -73,8 +73,8 @@ my %args = @_;
 $session->cmd("clear arp-cache");#GO TO CONF MODE FOR THIS PORT
 #GO TO CONF MODE FOR THIS PORT
 $session->cmd("conf t");
-$session->cmd("default interface gigabit 0/".$args{port});
-$session->cmd("interface gigabit 0/".$args{port});
+$session->cmd("default interface gigabit ".$args{port});
+$session->cmd("interface gigabit ".$args{port});
 #TURN ON SWITCHPORT AND MAKE MODE ACCESS
 $session->cmd("switchport");
 $session->cmd("switchport mode access");
@@ -94,7 +94,7 @@ sub portstatus {
   my $self = shift;
   my %args = @_;
 
-  my @cmd_output = $session->cmd("show ip interface brief gigabit 0/$args{port}");
+  my @cmd_output = $session->cmd("show ip interface brief gigabit $args{port}");
 
   if ($cmd_output[1] =~ /down/) {
     return 0;
@@ -107,7 +107,7 @@ sub shut_port {
   my %args = @_;
 
   $session->cmd("conf t");
-$session->cmd("interface gigabit 0/$args{port}");
+$session->cmd("interface gigabit $args{port}");
 $session->cmd("shut");
 }
 

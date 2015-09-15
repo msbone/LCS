@@ -22,8 +22,8 @@ WHERE netlist.id = switches.net_id
 AND switches.connected_to = coreswitches.id
 AND switches.configured =0
 AND coreswitches.type = 2
-ORDER BY switches.connected_to, switches.connected_port
-LIMIT 0 , 30";
+ORDER BY switches.connected_to, switches.distro_port
+";
 
 
 $sth = $dbh->prepare($sql);
@@ -34,7 +34,11 @@ while (my $ref = $sth->fetchrow_hashref()) {
 
 if($ref->{'distroip'} ne  $distro_ip && $ref->{'distroip'} ne ""){
 stuff->log(message => "Changed distro from $distro_name to $ref->{'distroname'}", switch => "");
-sleep 60;
+if($ref->{'distroip'} eq  "") {
+
+}else {
+  #sleep 60;
+}
 }
 
   $distro_name = $ref->{'distroname'};
@@ -53,7 +57,7 @@ sleep 60;
     #THIS SHOULD MAKE IT WAIT FOR THE PORT IS UP, IF THE SWITCH IS ACCTUAL CONNECTED, IF NOT THE PORT IS UP OSPF WILL NOT REDISTUBUTE THE ROUTE
     $distro -> setup_port(port => $connected_port);
     stuff->log(message => "Port $connected_port on $distro_name setup in config mode", switch => $switch_name);
-    sleep(5);
+    sleep(10);
     if($distro -> portstatus(port => $connected_port) ==  0) {
       stuff->log(message => "The port $connected_port on $distro_name is not up.", switch => $switch_name);
       print "PORT IS NOT UP, NEXT SWITCH!";
@@ -87,7 +91,7 @@ next;
     $dlink = dlink->connect(ip => "10.90.90.90",username => "admin",password => "admin", name => $ref->{'name'});
     stuff->log(message => "Connected to switch", switch => $switch_name);
     sleep(1);
-    $dlink->setIP(ip => "10.90.90.90", gateway => "10.90.90.1", subnetmask => "255.255.255.0");
+    #$dlink->setIP(ip => "10.90.90.90", gateway => "10.90.90.1", subnetmask => "255.255.255.0");
     sleep(1);
     #Check if this is C1 (SDOK) or B1 (VLAN)
 print $dlink->getHWversion();

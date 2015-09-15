@@ -46,7 +46,7 @@ sub populate_switches
       'sysname' => $ref->{'name'},
       'id' => $ref->{'id'},
       'mgtip' => $ref->{'ip'},
-      'community' => "hjemmesnmp",
+      'community' => "teknisk15",
       'version' => $ref->{'snmp_version'},
       'model' => $ref->{'model'}
     };
