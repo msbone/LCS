@@ -19,7 +19,7 @@ $Q3="FLUSH PRIVILEGES;";
 $sql = "$Q1 $Q2 $Q3";
 
 system("mysql -uroot -p$root_password  -e \"$sql\"");
-system("mysql -uroot -p$root_password $db_name < include/lcs.sql");
+system("mysql -uroot -p$root_password $db_name < /lcs/include/lcs.sql");
 
 my $db_password_file = '/lcs/include/db_password.txt';
 open(my $fh, '>', $db_password_file) or die "Could not open file '$db_password_file' $!";
