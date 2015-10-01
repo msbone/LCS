@@ -1,0 +1,12 @@
+SYSLOG FOR lcs
+
+type:
+      1: cronjobs
+
+      SNMP
+      11: start/stop
+      12: new Port
+      13: port changed
+      19: other
+
+      

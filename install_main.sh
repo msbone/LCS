@@ -2,7 +2,7 @@
 echo "Making stuff nice"
 
 sudo mkdir -p "/lcs/"
-apt-get -y install libsnmp-perl unzip libstring-random-perl libnetaddr-ip-perl libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa libnet-oping-perl librrds-perl rrdtool snmp-mibs-downloader
+apt-get -y install libnet-snmp-perl unzip libstring-random-perl libnetaddr-ip-perl libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa libnet-oping-perl librrds-perl rrdtool snmp-mibs-downloader
 cd "/lcs"
 echo "Downloading code....."
 wget https://github.com/msbone/lcs/archive/master.zip

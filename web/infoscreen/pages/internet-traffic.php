@@ -1,5 +1,5 @@
 <?php
-$port_id = 4;
+$port_id = 29;
 
 function bytesToSize($bytes, $precision = 2)
 {
@@ -40,8 +40,4 @@ echo "In: ".bytesToSize($row["inn"]*8) . "/s<br />";
 echo "Out: ".bytesToSize($row["ut"]*8) . "/s </small> </h1>";
 echo "<img class='responsive' src='/graph/make_port_graph.php?big=1&port=$port_id'&rnd=".time().">";
 }
-
-
-
-
 ?>

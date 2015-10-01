@@ -5,6 +5,7 @@ public $pages = [
     "frontpage" => "Dashboard",
     "switches" => "Switches",
     "networks" => "Networks",
+    "syslog" => "Syslog",
 ];
 
 public $hidden_pages = [

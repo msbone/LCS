@@ -15,13 +15,17 @@ $sidebar = new sidebar;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>LCS - VatneLAN 2015</title>
+    <title>LCS - Testevent 2015</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="/bootstrap/css/dashboard.css" rel="stylesheet">
+
+    <!-- Include the dropdown-multiselect's CSS and JS: -->
+<script type="text/javascript" src="bootstrap/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="bootstrap/bootstrap-multiselect.css" type="text/css"/>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -41,7 +45,7 @@ $sidebar = new sidebar;
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">LCS - VatneLAN 2015 - <?php echo $content->get_page_name(); ?></a>
+          <a class="navbar-brand" href="/">LCS - Testevent - <?php echo $content->get_page_name(); ?></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
