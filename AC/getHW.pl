@@ -1,7 +1,7 @@
 use lib '/lcs/include';
 
 use dlink;
-use ciscoconf;
+use cisco;
 use stuff;
 use Net::Netmask;
 
