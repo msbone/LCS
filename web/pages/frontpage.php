@@ -60,5 +60,5 @@ $result = mysqli_query($con,$sql);
 <?php } ?>
   </table>
 </div></div></div>
-  <div class="col-md-5"><div class="well well-sm"><img class="img-responsive" src="/rrd/dhcp-0-hour-2.png" alt="dhcp leases"></div><div class="well well-sm"><img class="img-responsive" src="/graph/all_traffic.php" alt="total traffic"></div></div>
+  <div class="col-md-5"><div class="well well-sm"><img class="img-responsive" src="/graph/all_traffic.php" alt="total traffic"></div></div>
 </div>

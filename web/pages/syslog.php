@@ -47,7 +47,7 @@ include("database.php");
     <option value="3" selected="selected">Medium</option>
     <option value="4" selected="selected">Low</option>
     <option value="5" selected="selected">Info</option>
-    <option value="9" selected="selected">Debug</option>
+    <option value="9">Debug</option>
 </select>
   </div>
   <div class="visible-lg col-md-1 col-md-offset-5"><span style="font-size:2em;" id="reload" class="glyphicon glyphicon-refresh" aria-hidden="true"></span></div>

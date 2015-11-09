@@ -4,6 +4,12 @@ if(@$_GET["port"] == "") {
   die("NO PORT SET");
 }
 
+if(@$_GET["time"] == "") {
+  $end_time = 3600;
+} else {
+  $end_time = $_GET["time"];
+}
+
 $kilobyte = 1024;
 $megabyte = $kilobyte * 1024;
 $gigabyte = $megabyte * 1024;
@@ -46,7 +52,22 @@ $myData = new pData();
 
 #$sql = "select latency_ms,updated from switches_ping WHERE updated >= ( UNIX_TIMESTAMP( NOW( ) ) - 50 ) AND switch = 2";
 #$sql = "SELECT AVG(latency_ms), HOUR(from_unixtime(updated)), DATE(from_unixtime(updated)) FROM switches_ping WHERE DATE_SUB(from_unixtime(updated),INTERVAL 1 HOUR) AND updated >= ( UNIX_TIMESTAMP( NOW( ) ) - 86400 ) AND latency_ms IS NOT NULL GROUP BY DATE( from_unixtime(updated) ), HOUR(from_unixtime(updated)) ORDER BY updated ASC";
-$sql = "SELECT ports_poll.bytes_in, ports_poll.bytes_out, ports_poll.time, switches.name, ports.ifName FROM ports_poll JOIN ports, switches WHERE ports.id = ports_poll.port AND switches.id = ports_poll.switch AND  time >= ( UNIX_TIMESTAMP( NOW( ) ) - 3600 ) AND port = '".$_GET["port"]."'";
+#$sql = "SELECT ports_poll.bytes_in, ports_poll.bytes_out, ports_poll.time, switches.name, ports.ifName FROM ports_poll JOIN ports, switches WHERE ports.id = ports_poll.port AND switches.id = ports_poll.switch AND  time >= ( UNIX_TIMESTAMP( NOW( ) ) - 3600 ) AND port = '".$_GET["port"]."'";
+
+if($end_time <= 3600) {
+$sql = "SELECT ports_poll.bytes_in, ports_poll.bytes_out, ports_poll.time, switches.name, ports.ifName FROM ports_poll JOIN ports, switches WHERE ports.id = ports_poll.port AND switches.id = ports_poll.switch AND  time >= ( UNIX_TIMESTAMP( NOW( ) ) - ".$end_time." ) AND port = '".$_GET["port"]."'";
+} else {
+
+$sql = "SELECT CONCAT( DATE( FROM_UNIXTIME( TIME ) ) ,  ' ', HOUR( FROM_UNIXTIME( TIME ) ) ,  ':', ROUND( MINUTE( FROM_UNIXTIME( TIME ) ) /5, 0 ) *5 ) , MAX( ports_poll.bytes_in ) AS bytes_in , MAX( ports_poll.bytes_out ) AS bytes_out , ports_poll.time, switches.name, ports.ifName
+FROM ports_poll
+JOIN ports, switches
+WHERE ports.id = ports_poll.port
+AND switches.id = ports_poll.switch
+AND ports_poll.`time` >= ( UNIX_TIMESTAMP( NOW( ) ) - ".$end_time." )
+AND ports_poll.port =  '".$_GET["port"]."'
+GROUP BY DATE( FROM_UNIXTIME( TIME ) ) , HOUR( FROM_UNIXTIME( TIME ) ) , ROUND( MINUTE( FROM_UNIXTIME( TIME ) ) /5, 0 ) *5";
+}
+
 $result = mysqli_query($con,$sql);
   while($row = mysqli_fetch_array($result))
   {
@@ -72,6 +93,8 @@ $myPicture->drawText(30,40,"NO DATA TO MAKE THE GRAPH!");
 $myPicture->Stroke();
   die();
 }
+
+
 
 $bytes_in_max = bytesToSize(max($bits_in));
 $bytes_out_max = bytesToSize(max($bits_out));
@@ -154,7 +177,7 @@ $myPicture = new pImage(1362,488,$myData);
 $myPicture->drawFilledRectangle(00,00,1362,488,array("R"=>67,"G"=>74,"B"=>84));
 $myPicture->setFontProperties(array("FontName"=>"pChart2.1.4/fonts/SourceCodePro-Light.ttf","FontSize"=>16,"R"=>227,"G"=>231,"B"=>236));
 $myPicture->setGraphArea(80,60,1362,400);
-$myPicture->drawScale(array("Mode"=>SCALE_MODE_START0,"LabelSkip"=>4));
+$myPicture->drawScale(array("Mode"=>SCALE_MODE_START0,"LabelSkip"=>5));
 $myPicture->drawLineChart();
 #header('Content-Type: image/png');
 $myPicture->Stroke();
@@ -173,7 +196,7 @@ $myPicture->Stroke();
   $myPicture = new pImage(681,244,$myData);
   $myPicture->setFontProperties(array("FontName"=>"pChart2.1.4/fonts/SourceCodePro-Light.ttf","FontSize"=>10));
   $myPicture->setGraphArea(40,40,681,220);
-  $myPicture->drawScale(array("Mode"=>SCALE_MODE_START0,"LabelSkip"=>4));
+  $myPicture->drawScale(array("Mode"=>SCALE_MODE_START0,"LabelSkip"=>5));
   $myPicture->drawLineChart();
   $myPicture->drawText(60,35,$port_info,array("FontSize"=>18,"Align"=>TEXT_ALIGN_BOTTOMLEFT));
   #header('Content-Type: image/png');

@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+die "NOT IN USE!";
 use DBI;
 use SNMP;
 use Time::HiRes qw(time);

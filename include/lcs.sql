@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Vert: localhost
--- Generert den: 09. Sep, 2015 00:06 AM
--- Tjenerversjon: 5.5.44-0ubuntu0.14.04.1
--- PHP-Versjon: 5.5.9-1ubuntu4.11
+-- Generert den: 09. Nov, 2015 11:25 AM
+-- Tjenerversjon: 5.5.46-0ubuntu0.14.04.2
+-- PHP-Versjon: 5.5.9-1ubuntu4.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -13,6 +13,22 @@ SET time_zone = "+00:00";
 --
 -- Database: `lcs`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur for tabell `aps`
+--
+
+CREATE TABLE IF NOT EXISTS `aps` (
+  `id` varchar(64) NOT NULL,
+  `mac` varchar(32) NOT NULL,
+  `ip` varchar(32) NOT NULL,
+  `alias` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -38,12 +54,12 @@ CREATE TABLE IF NOT EXISTS `dhcp_leases` (
 
 CREATE TABLE IF NOT EXISTS `link_networks` (
   `id` int(12) NOT NULL AUTO_INCREMENT,
-  `sw_1` int(12) NOT NULL,
-  `sw_2` int(12) NOT NULL,
+  `port1` int(12) NOT NULL,
+  `port2` int(12) NOT NULL,
   `configured` int(1) DEFAULT '0',
-  `ip_range` varchar(32) DEFAULT '0.0.0.0/30',
+  `rendered` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -66,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `netlist` (
   `master` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=103 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -82,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `placements` (
   `x2` int(32) NOT NULL,
   `y2` int(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -100,8 +116,9 @@ CREATE TABLE IF NOT EXISTS `ports` (
   `current_in` bigint(128) DEFAULT NULL,
   `current_out` bigint(128) DEFAULT NULL,
   `updated` int(32) DEFAULT NULL,
+  `status` int(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -135,13 +152,13 @@ CREATE TABLE IF NOT EXISTS `switches` (
   `configured` int(1) DEFAULT '0',
   `type` int(2) DEFAULT '1',
   `connected_to` int(12) DEFAULT NULL,
-  `connected_port` int(12) DEFAULT NULL,
+  `connected_port` varchar(12) DEFAULT NULL,
   `updated` varchar(32) DEFAULT NULL,
   `latency_ms` double DEFAULT NULL,
   `cpu_use` int(3) DEFAULT NULL,
   `uptime` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -155,3 +172,19 @@ CREATE TABLE IF NOT EXISTS `switches_ping` (
   `latency_ms` double DEFAULT NULL,
   PRIMARY KEY (`updated`,`switch`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur for tabell `syslog`
+--
+
+CREATE TABLE IF NOT EXISTS `syslog` (
+  `id` int(64) NOT NULL AUTO_INCREMENT,
+  `time` int(32) NOT NULL,
+  `from` varchar(32) NOT NULL,
+  `priority` int(32) NOT NULL,
+  `message` varchar(128) NOT NULL,
+  `type` int(32) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

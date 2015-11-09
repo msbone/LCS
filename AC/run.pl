@@ -22,7 +22,7 @@ WHERE netlist.id = switches.net_id
 AND switches.connected_to = coreswitches.id
 AND switches.configured =0
 AND coreswitches.type = 2
-ORDER BY switches.connected_to, switches.distro_port
+ORDER BY switches.connected_to, switches.connected_port
 ";
 
 
@@ -34,34 +34,28 @@ while (my $ref = $sth->fetchrow_hashref()) {
 
 if($ref->{'distroip'} ne  $distro_ip && $ref->{'distroip'} ne ""){
 stuff->log(message => "Changed distro from $distro_name to $ref->{'distroname'}", switch => "");
-if($ref->{'distroip'} eq  "") {
-
-}else {
-  #sleep 60;
-}
 }
 
-  $distro_name = $ref->{'distroname'};
-  $distro_model = $ref->{'distromodel'};
-  $distro_ip = $ref->{'distroip'};
-  $switch_name = $ref->{'name'};
+  my $distro_name = $ref->{'distroname'};
+  my $distro_model = $ref->{'distromodel'};
+  my $distro_ip = $ref->{'distroip'};
+  my $switch_name = $ref->{'name'};
 
 
-  $connected_port = $ref->{'distro_port'};
+  $connected_port = $ref->{'connected_port'};
 
   if($distro_model eq "3560g") {
 
     stuff->log(message => "Starting magic", switch => $switch_name);
     my $distro = ciscoconf->connect(ip => $distro_ip,username => $lcs::config::ios_user,password => $lcs::config::ios_pass,hostname => $distro_name, enable_password => $lcs::config::ios_pass);
     stuff->log(message => "Connected to $distro_name", switch => $switch_name);
-    #THIS SHOULD MAKE IT WAIT FOR THE PORT IS UP, IF THE SWITCH IS ACCTUAL CONNECTED, IF NOT THE PORT IS UP OSPF WILL NOT REDISTUBUTE THE ROUTE
     $distro -> setup_port(port => $connected_port);
     stuff->log(message => "Port $connected_port on $distro_name setup in config mode", switch => $switch_name);
     sleep(10);
     if($distro -> portstatus(port => $connected_port) ==  0) {
       stuff->log(message => "The port $connected_port on $distro_name is not up.", switch => $switch_name);
       print "PORT IS NOT UP, NEXT SWITCH!";
-$distro -> setvlan(port => $connected_port,vlan => "666", desc => "DLINKAC FAILED HERE");
+$distro -> setvlan(port => $connected_port,vlan => "666", desc => "AC FAILED HERE");
 $distro -> shut_port(port => $connected_port);
 next;
     }

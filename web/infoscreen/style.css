@@ -8,6 +8,12 @@ color: #E3E7EC;
   left: 10px;
   bottom: 10px;
 }
+#status {
+  font-size: 20px;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+}
 
 #clock {
   font-size: 35px;

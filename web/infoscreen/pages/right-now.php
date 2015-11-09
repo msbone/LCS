@@ -33,7 +33,7 @@ $sql = "SELECT SUM(  current_in ) AS inn , SUM(  current_out ) AS ut FROM  ports
 $result = mysqli_query($con,$sql);
   while($row = mysqli_fetch_array($result))
   {
-    echo '<h1 class="text-light-grey text-center">Totalt traffic right now <br /> <small style="font-size: 80px;" class="text-light-grey">';
+    echo '<h1 class="text-light-grey text-center">Aggregated traffic <br /> <small style="font-size: 80px;" class="text-light-grey">';
 echo "".bytesToSize(($row["inn"]*8) + ($row["ut"]*8)) . "/s </small> <br />";
 }
 echo "<img class='responsive' src='/graph/all_traffic.php?big=1&rnd=".time()."'>";
