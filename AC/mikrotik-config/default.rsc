@@ -1,45 +1,3 @@
-#!/usr/bin/perl
-use DBI;
-use Net::Netmask;
-use Net::Netmask;
-package MtikAC;
-
-require "/lcs/include/config.pm";
-
-sub create_config {
-  my $class = shift;
-  my %args = @_;
-  require "/lcs/include/config.pm";
-
-
-  my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
-  my $sql = "SELECT netlist.subnet, switches.ip, switches.name, switches.id
-  FROM switches
-  JOIN netlist
-  WHERE netlist.id = switches.net_id
-  AND switches.configured =0
-  AND switches.model = 'mtik'
-  ORDER BY switches.name
-  ";
-
-  my $sth = $dbh->prepare($sql);
-  $sth->execute or die "SQL Error: $DBI::errstr\n";
-
-  while (my $ref = $sth->fetchrow_hashref()) {
-
-$network_block = new Net::Netmask ($ref->{'ip'}, $ref->{'subnet'});
-my $sw_id =  $ref->{'id'};
-my $ip_address = $ref->{'ip'};
-my $cidr = $network_block->bits();
-my $network = $network_block->base();
-my $gateway = $network_block->nth(1);
-my $password = $lcs::config::mtik_pass;
-my $snmp = $lcs::config::snmp_community;
-my $pin = "1337";
-
-open(my $fh, '>', '/lcs/AC/mikrotik-config/sw-'.$sw_id.'.rsc');
-
-$config = <<"EOF";
 /password old-password="" new-password="$password" confirm-new-password="$password"
 /interface ethernet
 set [ find default-name=ether2 ] master-port=ether1
@@ -67,7 +25,7 @@ set [ find default-name=ether23 ] master-port=ether1
 set [ find default-name=ether24 ] master-port=ether1
 set [ find default-name=sfp1 ] master-port=ether1 name=sfp1-slave-local
 /snmp community
-set [ find default=yes ] name=$snmp
+set [ find default=yes ] name=hjemmesnmp
 /interface ethernet switch port
 set 1 isolation-leakage-profile-override=2
 set 2 isolation-leakage-profile-override=2
@@ -95,13 +53,13 @@ set 23 isolation-leakage-profile-override=2
 /interface ethernet switch port-isolation
 add forwarding-type=bridged port-profile=2 ports=ether1 protocol-type=dhcpv4 registration-status="" traffic-type="" type=dst
 /ip address
-add address=$ip_address/$cidr comment="default configuration" interface=ether1 network=$network
+add address=192.168.88.1/24 comment="default configuration" interface=ether1 network=192.168.88.0
 /ip route
-add distance=1 gateway=$gateway
+add distance=1 gateway=192.168.88.2
 /lcd
 set backlight-timeout=never default-screen=informative-slideshow read-only-mode=yes touch-screen=disabled
 /lcd pin
-set pin-number=$pin
+set pin-number=1337
 /lcd screen
 set 0 disabled=yes
 set 1 disabled=yes
@@ -116,25 +74,3 @@ set name=SWITCH
 set protected-routerboot=disabled
 /tool romon port
 set [ find default=yes ] cost=100 forbid=no interface=all secrets=""
-/system package
-disable advanced-tools
-disable dhcp
-disable hotspot
-disable mpls
-disable ppp
-disable routing
-disable wireless-cm2
-disable wireless-fp
-disable ipv6
-enable system
-enable security
-enable routeros-mipsbe
-EOF
-
-print $fh $config;
-close $fh;
-print "done with $sw_id\n";
-}
-}
-
-1;

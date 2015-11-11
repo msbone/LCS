@@ -29,8 +29,24 @@ sub ping {
   my $class = shift;
   my %args = @_;
 
-  $host = $args{ip};;
-  $tryes = $args{tryes};;
+  $host = $args{ip};
+  $tryes = $args{tryes};
+  $gw = $args{gw};
+
+  if($host eq "mtik") {
+    if($gw == 1) {
+    $host = "192.168.88.2";
+  } else {
+    $host = "192.168.88.1";
+  }
+  }
+  if($host eq "dgs24") {
+    if($gw == 1) {
+    $host = "10.90.90.1";
+  } else {
+    $host = "10.90.90.90";
+  }
+  }
 
 my $p=Net::Ping->new('icmp');
 
@@ -43,7 +59,7 @@ while ($failed < $tryes and $success == 0) {
     $success = 1;
   } else {
     $failed++;
-    print "No responding to ICMP $failed \n";
+    print "$host No responding to ICMP $failed  \n";
   }
 }
 

@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+die("NOT IN USE!");
 use lib '/lcs/include';
 
 use dlink;

@@ -41,6 +41,9 @@ our $snmp_write_community = "";
 our $dlink_pass = "";
 our $tftp_ip = $pri_v4;
 
+our $mtik_version = "6.33";
+our $mtik_pass = "";
+
 #READ THE DATABASE PASSWORD FROM db_password.txt
 open (DBPASSWORD, '/lcs/include/db_password.txt'); while (<DBPASSWORD>) { chomp; our $db_password = $_; } close (DBPASSWORD);
 

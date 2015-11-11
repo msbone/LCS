@@ -12,7 +12,7 @@ sub connect {
    my $class = shift;
    my $self = bless {}, $class;
    my %args = @_;
-  $session = Net::Telnet::Cisco->new(Host => $args{ip});
+  $session = Net::Telnet::Cisco->new(Host => $args{ip}, Timeout => 100);
    $session->login($args{username}, $args{password});
 
      if ($session->enable($args{enable_password}) ) {
@@ -36,7 +36,13 @@ $session->cmd("no shutdown");
 #TURN OFF SWITCHPORT
 $session->cmd("no switchport");
 #SET IP
+if($args{model} eq "mtik") {
+  $session->cmd("ip address 192.168.88.2 255.255.255.0");
+} elsif($args{model} eq "dgs24") {
 $session->cmd("ip address 10.90.90.1 255.255.255.0");
+} else {
+  die($args{model}." NOT SUPPORTED")
+}
 $session->cmd("desc CONFIG");
 #GO BACK TO START
 $session->cmd("exit");
@@ -70,7 +76,7 @@ my $self = shift;
 my %args = @_;
 #Set a port at a vlan
 #CLEAN THE ARP CACHE
-$session->cmd("clear arp-cache");#GO TO CONF MODE FOR THIS PORT
+$session->cmd("clear arp-cache");
 #GO TO CONF MODE FOR THIS PORT
 $session->cmd("conf t");
 $session->cmd("default interface gigabit ".$args{port});
@@ -109,6 +115,25 @@ sub shut_port {
   $session->cmd("conf t");
 $session->cmd("interface gigabit $args{port}");
 $session->cmd("shut");
+}
+
+sub gateway_mikrotik {
+  my $self = shift;
+  my %args = @_;
+  #$session->dump_log("telnet.txt");
+  $session->print("telnet 192.168.88.1");
+
+  $session->waitfor('/Login:/');
+  $session->print("admin");
+$session->waitfor('/Password:/');
+  $session->print("");
+  #$session->waitfor('/Confirming configuration../');
+  sleep(7);
+  $session->print("");
+  $session->waitfor('/\[admin.MikroTik] >/');
+  $session->print("ip route add distance=1 gateway=192.168.88.2");
+  $session->waitfor('/\[admin.MikroTik] >/');
+  $session->print("quit");
 }
 
 1;
