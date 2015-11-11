@@ -58,13 +58,13 @@ chmod -R 777 /etc/bind/dynamic
 chmod -R 777 /etc/bind/reverse
 
 #Do dlinkac magic
-sudo chmod -R 777 /lcs/dlinkac/tftp
-sudo chown -R nobody /lcs/dlinkac/tftp
+sudo chmod -R 777 /lcs/AC/tftp
+sudo chown -R nobody /lcs/AC/tftp
 
 cat > /etc/default/tftpd-hpa << EOF
 # /etc/default/tftpd-hpa
 TFTP_USERNAME="tftp"
-TFTP_DIRECTORY="/lcs/dlinkac/tftp"
+TFTP_DIRECTORY="/lcs/AC/tftp"
 TFTP_ADDRESS="0.0.0.0:69"
 TFTP_OPTIONS="-s -c -l"
 EOF
