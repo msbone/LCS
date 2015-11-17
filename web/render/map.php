@@ -1,6 +1,6 @@
 <?php
 header ('Content-Type: image/png');
-$im = imagecreatefrompng('vlan15.png');
+$im = imagecreatefrompng('area15.png');
 if($_GET["big"] == 1) {
   $white = ImageColorAllocate($im,67,74,84);
 }else {

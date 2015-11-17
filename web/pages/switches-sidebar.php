@@ -3,7 +3,7 @@
 </ul>
 <ul class="nav nav-sidebar">
   <li <?php if($_GET["page"] == "switchmap") {echo 'class="active"';}?>><a href="/index.php?page=switchmap">Ping map</a></li>
-  <li><a href="#">Traffic map</a></li>
+  <li <?php if($_GET["page"] == "trafficmap") {echo 'class="active"';}?>><a href="/index.php?page=trafficmap">Traffic map</a></li>
 </ul>
 
 <?php if($_GET["page"]  == "switchmap"){

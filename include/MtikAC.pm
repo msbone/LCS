@@ -1,16 +1,147 @@
 #!/usr/bin/perl
+package MtikAC;
 use DBI;
 use Net::Netmask;
-use Net::Netmask;
-package MtikAC;
+use Net::FTP;
+use Data::Dumper;
+
 
 require "/lcs/include/config.pm";
+
+sub getResources {
+  my $class = shift;
+    my %args = @_;
+  my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
+  my $sql = "SELECT ip,name FROM switches WHERE switches.model = 'mtik'";
+  my $sth = $dbh->prepare($sql);
+    $sth->execute or die "SQL Error: $DBI::errstr\n";
+
+  while (my $ref = $sth->fetchrow_hashref()) {
+    $Mtik::debug = 2;
+    my($mtik_host) = $ref->{'ip'};
+    my($mtik_username) = $lcs::config::mtik_user;
+    my($mtik_password) = $lcs::config::mtik_pass;
+    print "Logging in to Mtik: $mtik_host ".$ref->{"name"}."\n";
+  Mtik::login($mtik_host,$mtik_username,$mtik_password,"8728");
+  #Check if switch is running an old firmware
+  my %attrs;
+  my %queries;
+  my($retval,@results) = Mtik::mtik_query("/system/resource/print", \%attrs, \%queries);
+    #print Dumper $results[0]{"cpu-load"};
+    print "Mem: $results[0]{'used-memory'} \n";
+  Mtik::logout;
+}
+}
+
+sub getTemp {
+  my $class = shift;
+    my %args = @_;
+  my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
+  my $sql = "SELECT ip,name FROM switches WHERE switches.model = 'mtik'";
+  my $sth = $dbh->prepare($sql);
+    $sth->execute or die "SQL Error: $DBI::errstr\n";
+
+  while (my $ref = $sth->fetchrow_hashref()) {
+    $Mtik::debug = 2;
+    my($mtik_host) = $ref->{'ip'};
+    my($mtik_username) = $lcs::config::mtik_user;
+    my($mtik_password) = $lcs::config::mtik_pass;
+    print "Logging in to Mtik: $mtik_host ".$ref->{"name"}."\n";
+  Mtik::login($mtik_host,$mtik_username,$mtik_password,"8728");
+  #Check if switch is running an old firmware
+  my %attrs;
+  my %queries;
+  my($retval,@results) = Mtik::mtik_query("/system/health/print", \%attrs, \%queries);
+    print "Temp: $results[0]{temperature} \n";
+  Mtik::logout;
+}
+}
+
+sub checkFirmware {
+  my $class = shift;
+    my %args = @_;
+  my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
+  my $sql = "SELECT ip,name FROM switches WHERE switches.model = 'mtik'";
+  my $sth = $dbh->prepare($sql);
+    $sth->execute or die "SQL Error: $DBI::errstr\n";
+
+  while (my $ref = $sth->fetchrow_hashref()) {
+    $Mtik::debug = 2;
+    my($mtik_host) = $ref->{'ip'};
+    my($mtik_username) = $lcs::config::mtik_user;
+    my($mtik_password) = $lcs::config::mtik_pass;
+    print "Logging in to Mtik: $mtik_host ".$ref->{"name"}."\n";
+  Mtik::login($mtik_host,$mtik_username,$mtik_password,"8728");
+  #Check if switch is running an old firmware
+  my %attrs;
+  my %queries;
+  my($retval,@results) = Mtik::mtik_query("/system/package/print", \%attrs, \%queries);
+  if($results[0]{version} ne $lcs::config::mtik_version) {
+  print "Not correct OS, running: ".$results[0]{version} ."\n";
+  #Connect the FTP
+  my $ftp = Net::FTP->new($ref->{'ip'}, Debug => 0)
+        or die "Cannot connect to mtik: $@";
+        $ftp->login("admin",'Dataparty15')
+              or die "Cannot login ", $ftp->message;
+              $ftp->binary;
+  $ftp->put("/lcs/AC/mikrotik-firmware/routeros-mipsbe-6.33.npk", "routeros-mipsbe-6.33.npk") or die "put failed: " . $ftp->message;
+  }
+  else {
+    print "Running $results[0]{version} \n";
+  }
+  Mtik::logout;
+}
+}
+
+sub setHostname {
+my $class = shift;
+  my %args = @_;
+my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
+my $sql = "SELECT ip,name FROM switches WHERE switches.model = 'mtik'";
+my $sth = $dbh->prepare($sql);
+  $sth->execute or die "SQL Error: $DBI::errstr\n";
+
+while (my $ref = $sth->fetchrow_hashref()) {
+  $Mtik::debug = 2;
+  my($mtik_host) = $ref->{'ip'};
+  my($mtik_username) = $lcs::config::mtik_user;
+  my($mtik_password) = $lcs::config::mtik_pass;
+  print "Logging in to Mtik: $mtik_host ".$ref->{"name"}."\n";
+Mtik::login($mtik_host,$mtik_username,$mtik_password,"8728");
+my %attrs1;
+  $attrs1{"name"} = $ref->{"name"};
+  Mtik::mtik_cmd("/system/identity/set", \%attrs1);
+  Mtik::logout;
+}
+}
+
+sub setPassword {
+my $class = shift;
+  my %args = @_;
+my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
+my $sql = "SELECT ip FROM switches WHERE switches.model = 'mtik'";
+my $sth = $dbh->prepare($sql);
+  $sth->execute or die "SQL Error: $DBI::errstr\n";
+
+while (my $ref = $sth->fetchrow_hashref()) {
+  $Mtik::debug = 2;
+  my($mtik_host) = $ref->{'ip'};
+  my($mtik_username) = 'admin';
+  my($mtik_password) = '';
+  print "Logging in to Mtik: $mtik_host\n";
+Mtik::login($mtik_host,$mtik_username,$mtik_password,"8728");
+my %attrs1;
+  $attrs1{"old-password"} = "";
+  $attrs1{"new-password"} = $lcs::config::mtik_pass;
+$attrs1{"confirm-new-password"} = $lcs::config::mtik_pass;
+  Mtik::mtik_cmd("/password", \%attrs1);
+  Mtik::logout;
+}
+}
 
 sub create_config {
   my $class = shift;
   my %args = @_;
-  require "/lcs/include/config.pm";
-
 
   my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
   my $sql = "SELECT netlist.subnet, switches.ip, switches.name, switches.id
@@ -40,7 +171,6 @@ my $pin = "1337";
 open(my $fh, '>', '/lcs/AC/mikrotik-config/sw-'.$sw_id.'.rsc');
 
 $config = <<"EOF";
-/password old-password="" new-password="$password" confirm-new-password="$password"
 /interface ethernet
 set [ find default-name=ether2 ] master-port=ether1
 set [ find default-name=ether3 ] master-port=ether1

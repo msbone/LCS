@@ -133,8 +133,8 @@ next;
   $dlink->close;
 }elsif($switch_model eq "mtik") {
   #Set default gateway, so we can use API and FTP
-  my $distro = ciscoconf->connect(ip => "10.13.37.110",username => "ole",password => "Dataparty15",hostname => "TEST", enable_password => "Dataparty15");
-  $distro ->gateway_mikrotik();
+my $distro = ciscoconf->connect(ip => $distro_ip,username => $lcs::config::ios_user,password => $lcs::config::ios_pass,hostname => $distro_name, enable_password => $lcs::config::ios_pass);  
+$distro ->gateway_mikrotik();
   #Connect the API
   $Mtik::debug = 2;
   my($mtik_host) = '192.168.88.1';

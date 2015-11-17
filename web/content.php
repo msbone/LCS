@@ -11,6 +11,7 @@ public $pages = [
 public $hidden_pages = [
     "port_traffic" => "Port Traffic",
     "switchmap" => "Switch Map",
+    "trafficmap" => "Traffic Map",
     "master_network" => "Master Networks",
     "switches-create" => "Add new switch",
 ];

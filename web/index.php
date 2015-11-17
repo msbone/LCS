@@ -15,7 +15,7 @@ $sidebar = new sidebar;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>LCS - Testevent 2015</title>
+    <title>LCS - Area51-LAN 2015</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -45,7 +45,7 @@ $sidebar = new sidebar;
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">LCS - Testevent - <?php echo $content->get_page_name(); ?></a>
+          <a class="navbar-brand" href="/">LCS - Area51-LAN - <?php echo $content->get_page_name(); ?></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">

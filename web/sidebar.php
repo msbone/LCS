@@ -3,6 +3,7 @@ class sidebar{
 
 public $pages = [
     "switchmap" => "switches",
+    "trafficmap" => "switches",
     "switches" => "switches",
     "port_traffic" => "switches",
     "networks" => "networks",

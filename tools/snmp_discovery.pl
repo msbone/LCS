@@ -109,6 +109,12 @@ my $descr = $port_data{$switch}{$port}{'name'};
       $port_ok = 1;
       #print $descr ."\n";
       }
+	#Dlink
+      elsif ($descr =~ m/^Slot[0-9]\/[0-9]/) {
+      $port_ok = 1;
+      #print $descr ."\n";
+      }
+
       else {
         $port_ok = 0;
       #print $descr ."\n";

@@ -13,8 +13,7 @@
   	<body>
       <div class="container">
       <div id="wrapper"><h1 class="text-light-grey text-center">LCS <small class="text-light-grey">Infoscreen</small></h1></div>
-      <div id="status"> ALL GOOD </div>
-      <div id="lcs"> LCS - VatneLAN 2015 </div> <div id="clock"> </div>
+      <div id="lcs"> LCS - Area51-LAN 2015 </div> <div id="clock"> </div>
       </div>
   	</body>
   </html>

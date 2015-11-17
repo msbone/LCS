@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+use lib '/lcs/include';
 use dlink;
 use stuff;
 use Net::Netmask;
@@ -8,7 +9,7 @@ require "/lcs/include/config.pm";
 
 #THE SCRIPT OF ALL SCRIPTS
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
-$sql = "select * from switches WHERE model = 'dgs300' AND configured = 1";
+$sql = "select * from switches WHERE model = 'dgs24' AND configured = 1";
 
 $sth = $dbh->prepare($sql);
 $sth->execute or die "SQL Error: $DBI::errstr\n";

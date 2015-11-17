@@ -52,3 +52,8 @@ web/.idea/scopes/scope_settings.xml
 .rrd
 /old_backup/*
 deployment-config.json
+*.htaccess
+web/.htpasswd
+AC/mikrotik-config/*
+AC/mikrotik-firmware/*
+include/db_password.txt

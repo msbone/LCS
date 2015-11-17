@@ -6,4 +6,8 @@ use vars qw($error_msg $debug);
 use Mtik;
 use MtikAC;
 
-MtikAC->create_config();
+#MtikAC->create_config();
+#MtikAC->setPassword();
+#MtikAC->setHostname();
+#MtikAC->checkFirmware();
+MtikAC->getResources();

@@ -19,9 +19,9 @@ die();
 <script>
  // These are used by ping.js, below.
  var switches_url = "/render/switches-json.php";
- var ping_url = "/render/ping-json.php";
+ var ping_url = "/render/traffic-json.php";
  var draw_linknets = false;
- var can_edit = true;
+ var can_edit = false;
 </script>
 <script type="text/javascript" src="/render/render.js"></script>
 </div>
