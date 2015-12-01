@@ -8,7 +8,7 @@ use Net::Netmask;
 # (1) quit unless we have the correct number of command-line args
 $num_args = $#ARGV + 1;
 if ($num_args != 2) {
-  print "\nUsage: singleswitch.pl switch_ip password  \n";
+  print "\nUsage: getHW.pl switch_ip password  \n";
   exit;
 }
 
