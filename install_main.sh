@@ -2,7 +2,7 @@
 echo "Making stuff nice"
 
 sudo mkdir -p "/lcs/"
-apt-get -y install libnet-snmp-perl unzip libstring-random-perl libnetaddr-ip-perl libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa libnet-oping-perl librrds-perl rrdtool libio-socket-ssl-perl snmp-mibs-downloader
+apt-get -y install libnet-snmp-perl unzip libstring-random-perl libnetaddr-ip-perl libnet-netmask-perl isc-dhcp-server bind9 lamp-server^ libnet-telnet-cisco-perl libnet-telnet-perl tftpd-hpa libnet-oping-perl libio-socket-ssl-perl snmp-mibs-downloader snmp
 cd "/lcs"
 echo "Downloading code....."
 wget https://github.com/msbone/lcs/archive/master.zip
@@ -42,8 +42,10 @@ download-mibs
 mkdir /lcs/web/rrd
 
 cat > /etc/cron.d/lcs << EOF
+0,15,30,45 * * * * root perl /lcs/tools/snmp_discovery.pl
 * * * * * root perl /lcs/tools/snmp_fetch.pl
-* * * * * root perl /lcs/tools/generate_graph.pl
+* * * * * root perl /lcs/tools/dhcp_magic.pl
+* * * * * root perl /lcs/tools/mac-fetch.pl
 EOF
 
 
@@ -70,6 +72,10 @@ TFTP_OPTIONS="-s -c -l"
 EOF
 
 sudo service tftpd-hpa restart
+
+mkdir /LCS/AC/mikrotik-config
+mkdir /LCS/AC/mikrotik-firmware
+cd /LCS/AC/mikrotik-firmware
 
 #remove appamor
 service apparmor stop
