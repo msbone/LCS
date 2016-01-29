@@ -125,7 +125,7 @@ sub gateway_mikrotik {
 
   $session->waitfor('/Login:/');
   $session->print("admin");
-$session->waitfor('/Password:/');
+  $session->waitfor('/Password:/');
   $session->print("");
   #$session->waitfor('/Confirming configuration../');
   sleep(7);
