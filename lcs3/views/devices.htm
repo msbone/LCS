@@ -1,0 +1,29 @@
+<h1>Devices</h1>
+<table class="uk-table uk-table-hover">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Model</th>
+        <th>Hostname</th>
+    </tr>
+    </thead>
+    </tfoot>
+    <tbody>
+    <repeat group="{{ @result }}" value="{{ @item }}">
+
+        <check if="{{ @item.configured }}">
+            <false><tr class="uk-alert uk-alert"></false>
+            <true><check if="{{ @item.latencyMs }}">
+                <false><tr class="uk-alert uk-alert-danger"></false>
+                <true><tr class="uk-alert uk-alert-success"></true>
+            </check></true>
+        </check>
+            <td>{{ @item.name  }}</td>
+            <td>{{ @item.model  }}</td>
+            <td>{{ @item.name  }}.vl.vatnelan.net</td>
+            <td><a href="/devices/{{ @item.id  }}"><i class="uk-icon-bar-chart uk-icon-small"></i></a></td>
+        </tr>
+    </repeat>
+    </tbody>
+</table>
+<a href="/devices/new">Add new device</a>

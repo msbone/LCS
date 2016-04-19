@@ -1,0 +1,13 @@
+<form method="post" class="uk-form">
+
+    <fieldset data-uk-margin>
+        <legend>Create new devices</legend>
+        <div class="uk-form-row"><label class="uk-form-label uk-form-horizontal">Name (use % for number)</label> <div class="uk-form-controls"> <input class="uk-form-width-medium uk-form-help-inline" name="name" type="text" placeholder="Name"></div></div>
+        <div class="uk-form-row"><label class="uk-form-label uk-form-horizontal">Model</label> <div class="uk-form-controls"><select name="model"><option value="0">Select one</option><repeat group="{{ @models }}" value="{{ @model }}"><option value="{{ @model['long'] }}">{{ @model['short'] }}</option></repeat></select></div></div>
+        <div class="uk-form-row"><label class="uk-form-label uk-form-horizontal">Network</label> <div class="uk-form-controls"><select name="network"><option value="0">Create new</option><repeat group="{{ @networks }}" value="{{ @network }}"><option value="{{ @network['id'] }}">{{ @network['name'] }}</option></repeat></select></div></div>
+        <div class="uk-form-row"><label class="uk-form-label uk-form-horizontal">IPv4, leave blank for automagic</label> <div class="uk-form-controls"> <input name="ipv4" class="uk-form-width-medium uk-form-help-inline" type="text" placeholder="IPv4"></div></div>
+        <div class="uk-form-row"><label class="uk-form-label uk-form-horizontal">IPv6,  leave blank for automagic</label> <div class="uk-form-controls"> <input name="ipv6" class="uk-form-width-medium uk-form-help-inline" type="text" placeholder="IPv6"></div></div>
+        <div class="uk-form-row"><label class="uk-form-label uk-form-horizontal">Number of devices</label> <div class="uk-form-controls"> <input name="number" class="uk-form-width-medium uk-form-help-inline" type="number" value="1" min="1" max="256"></div></div>
+        <div class="uk-form-row"><button class="uk-button">Next</button></div>
+    </fieldset>
+</form>

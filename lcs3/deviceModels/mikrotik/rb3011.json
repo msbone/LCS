@@ -1,0 +1,41 @@
+{
+  "template":"default.json",
+  "shortName": "rb3011",
+  "fullName": "RB3011UiAS-RM",
+  "vendor": "Mikrotik",
+  "numberOfPorts": "11",
+  "type": 3,
+  "ports": {
+    "0": {
+      "prefix": "ether%",
+      "first": "1",
+      "last": "5",
+      "speed": "1g",
+      "l2": true,
+      "l3": true
+    },
+    "1": {
+      "prefix": "ether%",
+      "first": "6",
+      "last": "10",
+      "speed": "1g",
+      "l2": true,
+      "l3": true
+    },
+    "2": {
+      "prefix": "sfp%",
+      "first": "1",
+      "last": "1",
+      "speed": "1g",
+      "l2": false,
+      "l3": true
+    }
+  },
+  "ac": {
+    "default-ip": "192.168.88.1",
+    "default-mask": "24",
+    "default-username": "admin",
+    "default-password": "",
+    "acV": "mtik"
+  }
+}

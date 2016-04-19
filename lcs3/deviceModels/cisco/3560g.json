@@ -1,0 +1,15 @@
+{
+  "shortName": "3560g-28p",
+  "fullName": "Catalyst 3560G",
+  "vendor": "Cisco",
+  "numberOfPorts": "28",
+  "type":"2",
+  "ports": {
+    "0": {
+      "prefix": "ge1/%",
+      "first": "1",
+      "last": "28",
+      "speed": "1g"
+    }
+  }
+}

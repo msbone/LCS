@@ -1,0 +1,54 @@
+<h3>Patch the devices</h3>
+<form method="post" action="/devices/new/save">
+<table class="uk-table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Uplink</th>
+        <th>Switch</th>
+        <th>SwitchPort</th>
+        <th>IPv4</th>
+        <th>IPv6</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <repeat group="{{ @devices }}" value="{{ @item }}">
+    <tr>
+        <td>{{ @item.name  }}</td>
+        <td><select name="port{{ @item['id']  }}" id="port{{ @item['id']  }}" ><option value="0">None</option><repeat group="{{ @item['ports'] }}" value="{{ @port }}"><option>{{ @port }}</option></repeat></select></td>
+        <td><select name="switchId{{ @item['id']  }}" id="switchId{{ @item['id']  }}"><option value="0">None</option><repeat group="{{ @switches }}" value="{{ @switch }}"><option value="{{ @switch['id'] }}">{{ @switch['name'] }}</option></repeat></select></td>
+        <td><select name="switchPort{{ @item['id']  }}" id="switchPort{{ @item['id']  }}"><option value="">None</option></select></td>
+        <td>{{ @item.ipv4  }}</td>
+        <td>{{ @item.ipv6  }}</td>
+    </tr>
+    </repeat>
+    </tbody>
+</table>
+
+    <input name="oldPost" type="hidden" value="{{ @postData }}">
+
+    <div class="uk-form-row"><button class="uk-button">Create</button></div>
+</form>
+
+<script>
+    $('select[id^=switchId]').on('change', function() {
+        var deviceId = $(this).attr('id').replace ( /[^\d.]/g, '' );
+        if(this.value == 0) {
+            var select = $('#switchPort'+deviceId);
+            select.empty().append('<option value="0">None</option>');
+        } else {
+        $.getJSON( "/api/devices/"+this.value+"/freePorts", function( data ) {
+            var select = $('#switchPort'+deviceId);
+            select.empty();
+            if(data === null) {select.append('<option value="0">No available ports</option>');}
+            $.each( data, function( key, value ) {
+                select.append('<option value="'+value['id']+'">'+value['name']+'</option>');
+            });
+        }).error(function() {
+            var select = $('#switchPort'+deviceId);
+            select.empty().append('<option value="0">No available ports</option>');
+        });
+        }
+    });
+</script>
