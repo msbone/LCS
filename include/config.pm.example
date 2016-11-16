@@ -26,6 +26,11 @@ our $db_name = "lcs";
 our $db_username = "lcs";
 our $db_root_password = ""; #REMOVE THIS WHEN setup_database.pl IS DONE!!
 
+#InfluxDB
+our $influx_name = 'lcs';
+our $influx_host = 'localhost';
+our $influx_user = '';
+our $influx_password = '';
 
 #WIFI
 our $unifi_controller_ip = ""; #USED IN DHCP -- TODO NOT WORKING --

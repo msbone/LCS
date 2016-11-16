@@ -12,6 +12,13 @@ syslog->log(message => "Started",type => "1",priority => "9",from => "snmpfetch"
    # Connect to the database.
    $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
 
+   # Connect to InfluxDB
+   my $ix = AnyEvent::InfluxDB->new(
+               server => 'http://localhost:8086',
+               username => 'admin',
+               password => 'password',
+           );
+
    my $OID_ifName = '1.3.6.1.2.1.31.1.1.1.1';
    my $OID_in     = '1.3.6.1.2.1.31.1.1.1.6';
    my $OID_out    = '1.3.6.1.2.1.31.1.1.1.10';
@@ -166,6 +173,34 @@ if($port_status != $if_status) {
         }
 
         $dbh->do("INSERT INTO `lcs`.`ports_poll` (`time`, `switch`, `port`, `bytes_in`, `bytes_out`) VALUES ($epoc, '$sw_id', '$id', '$if_in', '$if_out')");
+
+        $cv = AE::cv;
+           $ix->write(
+               database => 'lcs',
+               data => [
+                   {
+                       measurement => 'net',
+                       tags => {
+                           host =>  $switch_name,
+                           lcs_id => $sw_id,
+                           interface => $if_name,
+                           lcs_interface_id => $id
+                       },
+                       fields => {
+                           bytes_recv => $if_in,
+                           bytes_sent => $if_out,
+                       },
+                       time => time()
+                   }
+               ],
+
+               on_success => $cv,
+               on_error => sub {
+                   $cv->croak("Failed to write data: @_");
+               }
+           );
+           $cv->recv;
+
       }
 
     }
