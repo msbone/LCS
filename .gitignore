@@ -57,3 +57,4 @@ web/.htpasswd
 AC/mikrotik-config/*
 AC/mikrotik-firmware/*
 include/db_password.txt
+lcs3_web/*
