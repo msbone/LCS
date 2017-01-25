@@ -30,8 +30,8 @@ sub make_dns_config {
 
   #La oss lage mapper i bind mappa
   #TODO Dette her ser ikke ut til å fungere, dette blir gjort i install_main.sh nå
-  eval { mkpath("$lcs::config::bind9_dir/dynamic") };
-  eval { mkpath("$lcs::config::bind9_dir/reverse") };
+  #eval { mkpath("/var/lib/bind/dynamic") };
+  #eval { mkpath("/var/lib/bind/reverse") };
 
   $Main_Domain_filepath = "$lcs::config::bind9_dir/".$hostname.".zone";
 
@@ -118,13 +118,13 @@ ns2		IN	CNAME	$sec_srv.$hostname.
       type master;
       notify yes;
       allow-update { key rndc-key; };
-      file \"dynamic/$network_hostname.zone\";
+      file \"/var/lib/bind/$network_hostname.zone\";
       allow-transfer { ns-xfr; };
     };
     ";
 
     #Opprette base config
-    $base_config_filepath = "$lcs::config::bind9_dir/dynamic/$network_hostname.zone";
+    $base_config_filepath = "/var/lib/bind/$network_hostname.zone";
     unless (-e $base_config_filepath) {open (baseconf, ">$base_config_filepath") or die "Can't write to file '$base_config_filepath' [$!]\n";
 
 print baseconf "; Generated at $date;
@@ -155,11 +155,11 @@ type master;
 allow-update { key rndc-key; };
 notify yes;
 allow-transfer { ns-xfr; };
-file \"reverse/$rev_zone.zone\";
+file \"/var/lib/bind/$rev_zone.zone\";
 };";
 
       #Opprette base rev config
-      $base_config_filepath = "$lcs::config::bind9_dir/reverse/$rev_zone.zone";
+      $base_config_filepath = "/var/lib/bind/$rev_zone.zone";
       unless (-e $base_config_filepath) {open (baseconf, ">$base_config_filepath")or die "Can't write to file '$base_config_filepath' [$!]\n"; print baseconf
 "; Generated at $date;
 ; This file should be okey to edit and is only generated if the file not exist :)

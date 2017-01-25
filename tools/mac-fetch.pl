@@ -72,6 +72,7 @@ Cisco_arp();
      while (my $ref = $sth->fetchrow_hashref()) {
        $Mtik::debug = 2;
        my($mtik_host) = $ref->{'ip'};
+       my($switch) = $ref->{'id'};
        my($mtik_username) = $lcs::config::mtik_user_core;
        my($mtik_password) = $lcs::config::mtik_pass_core;
        #print "Logging in to Mtik: $mtik_host ".$ref->{"name"}."\n";
@@ -79,9 +80,12 @@ Cisco_arp();
        my %attrs;
        my %queries;
        my($retval,@results) = Mtik::mtik_query("/ip/arp/print", \%attrs, \%queries);
+       my $found = 0;
      foreach my $test (@results) {
+       if($test->{'mac-address'} ne '') {
      my $mac = lc $test->{'mac-address'};
      my $ip = lc $test->{'address'};
+     my $port = $test->{'interface'};
      my $sql1 = "SELECT mac FROM mac_table WHERE mac = '$mac'";
      my $sth1 = $dbh->prepare($sql1);
        $sth1->execute or die "SQL Error: $DBI::errstr\n";
@@ -89,7 +93,30 @@ Cisco_arp();
      while (my $ref1 = $sth1->fetchrow_hashref()) {
      if($mac eq $ref1->{"mac"}) {
        $dbh->do("UPDATE  `lcs`.`mac_table` SET  `ip` =  '$ip' WHERE  `mac_table`.`mac` =  '$mac'");
-     }}}}
+       $found = 1;
+     }
+   }
+
+    if($found  == 0){
+      #Get the correct id for this port
+      my $sql1 = "SELECT ports.id FROM ports WHERE ports.switch_id = $switch AND ports.ifName = '$port'";
+      my $sth1 = $dbh->prepare($sql1);
+        $sth1->execute or die "SQL Error: $DBI::errstr\n";
+      my $port_found = "false";
+      while (my $ref1 = $sth1->fetchrow_hashref()) {
+        $port = $ref1->{"id"};
+        $port_found = "true";
+      }
+      if($port_found eq "false") {
+        next;
+      }
+      my $time = time();
+      $dbh->do("INSERT INTO `mac_table` (mac,port,ip,switch,updated) VALUES ('$mac', '$port','$ip', '$switch', '$time')");
+      print "Added mac: $mac port: $port IP: $ip \n";
+    }
+   }
+ }
+  }
    }
 
    sub Dlink_fdb {
@@ -167,15 +194,17 @@ if($port_found eq "false") {
    }
 
    sub Mtik_fdb {
-     my $sql = "SELECT ip,name,id FROM switches WHERE switches.model = 'mtik'";
+     my $sql = "SELECT ip,name,id,model FROM switches WHERE switches.model = 'mtik'";
      my $sth = $dbh->prepare($sql);
        $sth->execute or die "SQL Error: $DBI::errstr\n";
 
      while (my $ref = $sth->fetchrow_hashref()) {
        $Mtik::debug = 2;
        my($mtik_host) = $ref->{'ip'};
-       my($mtik_username) = "admin";
-       my($mtik_password) = $lcs::config::mtik_pass;
+
+    my $mtik_username = "admin";
+    my $mtik_password = $lcs::config::mtik_pass;
+
        #print "Logging in to Mtik: $mtik_host ".$ref->{"name"}."\n";
      Mtik::login($mtik_host,$mtik_username,$mtik_password,"8728");
      #Get the fdb table

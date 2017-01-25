@@ -3,10 +3,21 @@ use File::Copy;
 use Time::Local;
 use NetAddr::IP;
 use DBI;
-use RRDs;
+
+use AnyEvent;
+use AnyEvent::Socket;
+use AnyEvent::Handle;
+use AnyEvent::InfluxDB;
 
 require "/lcs/include/config.pm";
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
+
+# Connect to InfluxDB
+my $ix = AnyEvent::InfluxDB->new(
+            server => 'http://localhost:8086',
+            username => 'admin',
+            password => 'password',
+        );
 
 $dbh->do("TRUNCATE dhcp_leases"); #Tømmer dhcp_leases sa vi kan legge inn alt pånytt
 
@@ -80,14 +91,9 @@ $end_date_time = timelocal($sec,$min,$hour,$mday,$mon-1,$year);
 }
 
 $epoc = time();
-my $rrd_file = "/lcs/web/rrd/dhcp-0.rrd";
-unless (-e $rrd_file) {
-  RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:inuse:GAUGE:10080:U:U", "RRA:MAX:0.5:1:10080";
- }
- RRDs::update $rrd_file, "-t", "inuse", "N:$lease";
 
 
-$sql = "select id, network FROM netlist WHERE dhcp = 1";
+$sql = "select id, network, name FROM netlist WHERE dhcp = 1";
 $sth = $dbh->prepare($sql);
 
 $sth->execute or die "SQL Error: $DBI::errstr\n";
@@ -95,16 +101,36 @@ while (my $ref = $sth->fetchrow_hashref()) {
   $leases = 0;
   $net_id = $ref->{'id'};
   $network_id = $ref->{'network'};
+  $network_name = $ref->{'name'};
   $epoc = time();
-  my $rrd_file = "/lcs/web/rrd/dhcp-$net_id.rrd";
-  unless (-e $rrd_file) {
-    RRDs::create $rrd_file, "--step","60", "--start","$epoc", "DS:inuse:GAUGE:10080:U:U", "RRA:MAX:0.5:1:10080";
-   }
    $sql2 = "select id from dhcp_leases WHERE network = '$net_id'";
    $sth2 = $dbh->prepare($sql2);
    $sth2->execute or die "SQL Error: $DBI::errstr\n";
    $leases = $sth2->rows;
-   RRDs::update $rrd_file, "-t", "inuse", "N:$leases";
+
+   $cv = AE::cv;
+      $ix->write(
+          database => 'lcs',
+          data => [
+              {
+                  measurement => 'dhcp_leases',
+                  tags => {
+                      lcs_id => $net_id,
+                      name => $network_name,
+                  },
+                  fields => {
+                      leases => $leases,
+                  },
+              }
+          ],
+
+          on_success => $cv,
+          on_error => sub {
+              $cv->croak("Failed to write data: @_");
+          }
+      );
+      $cv->recv;
+
    print "$network_id  - $leases \n";
 }
 

@@ -53,6 +53,10 @@ my $result = $ping->ping();
     $dbh->do("UPDATE  `switches` SET  `latency_ms` =  $latency,`updated` =  '$epoc' WHERE  `id` =$switch");
     $dbh->do("INSERT INTO  `lcs`.`switches_ping` (`switch` , `updated` , `latency_ms`) VALUES ( '$switch',  '$epoc',  $latency )");
 
+if($latency == "NULL"){
+$latency = 0;
+}
+
     $cv = AE::cv;
        $ix->write(
            database => 'lcs',
@@ -66,7 +70,6 @@ my $result = $ping->ping();
                    fields => {
                        value => $latency,
                    },
-                   time => time()
                }
            ],
 

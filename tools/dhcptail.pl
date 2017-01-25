@@ -6,7 +6,7 @@ use DBI;
 require "/lcs/include/config.pm";
 $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
 
-$year = 2015;
+$year = 2016;
 my %months = (
 Jan => "01",
 Feb => "02",

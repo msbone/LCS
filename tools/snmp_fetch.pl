@@ -7,6 +7,11 @@ require "/lcs/include/config.pm";
    use Data::Dumper qw(Dumper);
    use syslog;
 
+use AnyEvent;
+use AnyEvent::Socket;
+use AnyEvent::Handle;
+use AnyEvent::InfluxDB;
+
 syslog->log(message => "Started",type => "1",priority => "9",from => "snmpfetch");
 
    # Connect to the database.
@@ -22,6 +27,15 @@ syslog->log(message => "Started",type => "1",priority => "9",from => "snmpfetch"
    my $OID_ifName = '1.3.6.1.2.1.31.1.1.1.1';
    my $OID_in     = '1.3.6.1.2.1.31.1.1.1.6';
    my $OID_out    = '1.3.6.1.2.1.31.1.1.1.10';
+
+   my $OID_in_UcastPkts = '1.3.6.1.2.1.31.1.1.1.7';
+   my $OID_in_MulticastPkts = '1.3.6.1.2.1.31.1.1.1.8';
+   my $OID_in_BroadcastPkts = '1.3.6.1.2.1.31.1.1.1.9';
+
+   my $OID_out_UcastPkts = '1.3.6.1.2.1.31.1.1.1.11';
+   my $OID_out_MulticastPkts = '1.3.6.1.2.1.31.1.1.1.12';
+   my $OID_out_BroadcastPkts = '1.3.6.1.2.1.31.1.1.1.13';
+
    my $OID_speed  = '1.3.6.1.2.1.31.1.1.1.15';
    my $OID_desc  =  '1.3.6.1.2.1.31.1.1.1.18';
    my $OID_status = '1.3.6.1.2.1.2.2.1.8';
@@ -30,7 +44,10 @@ syslog->log(message => "Started",type => "1",priority => "9",from => "snmpfetch"
    my $OID_sysDescr = '1.3.6.1.2.1.1.1';
    my $OID_sysUpTime = '1.3.6.1.2.1.1.3';
 
-   @OID_port_request = ($OID_ifName,$OID_in,$OID_out,$OID_speed,$OID_desc,$OID_status,$OID_ifPhysAddress);
+   @OID_port_request = ($OID_ifName,$OID_in,$OID_out,$OID_speed,$OID_desc,$OID_status,$OID_ifPhysAddress,
+   $OID_in_UcastPkts,$OID_in_MulticastPkts,$OID_in_BroadcastPkts,
+   $OID_out_UcastPkts,$OID_out_MulticastPkts,$OID_out_BroadcastPkts
+   );
 
    my @port_data = ();
 
@@ -99,6 +116,26 @@ foreach my $n (@OID_port_request_local) {
             }elsif(oid_base_match($OID_ifPhysAddress,$n)) {
                 $port_data{$switch}{$port}{"ifPhysAddress"} = unpack( 'H*', $result->{$n});
               }
+
+              elsif(oid_base_match($OID_out_UcastPkts,$n)) {
+                  $port_data{$switch}{$port}{"out_UcastPkts"} = $result->{$n};
+                  }
+                  elsif(oid_base_match($OID_out_MulticastPkts,$n)) {
+                      $port_data{$switch}{$port}{"out_MulticastPkts"} = $result->{$n};
+                      }
+                      elsif(oid_base_match($OID_out_BroadcastPkts,$n)) {
+                          $port_data{$switch}{$port}{"out_BroadcastPkts"} = $result->{$n};
+                          }
+
+                          elsif(oid_base_match($OID_in_UcastPkts,$n)) {
+                              $port_data{$switch}{$port}{"in_UcastPkts"} = $result->{$n};
+                              }
+                              elsif(oid_base_match($OID_in_MulticastPkts,$n)) {
+                                  $port_data{$switch}{$port}{"in_MulticastPkts"} = $result->{$n};
+                                  }
+                                  elsif(oid_base_match($OID_in_BroadcastPkts,$n)) {
+                                      $port_data{$switch}{$port}{"in_BroadcastPkts"} = $result->{$n};
+                                      }
 }
 }
 $session->close();
@@ -117,6 +154,14 @@ foreach my $switch (sort keys %port_data) {
       my $if_out = $port_data{$switch}{$port}{'out'};
       my $if_status = $port_data{$switch}{$port}{'status'};
       my $if_PhysAddress = $port_data{$switch}{$port}{'ifPhysAddress'};
+
+      my $out_UcastPkts = $port_data{$switch}{$port}{'out_UcastPkts'};
+      my $out_MulticastPkts = $port_data{$switch}{$port}{'out_MulticastPkts'};
+      my $out_BroadcastPkts = $port_data{$switch}{$port}{'out_BroadcastPkts'};
+
+      my $in_UcastPkts = $port_data{$switch}{$port}{'in_UcastPkts'};
+      my $in_MulticastPkts = $port_data{$switch}{$port}{'in_MulticastPkts'};
+      my $in_BroadcastPkts = $port_data{$switch}{$port}{'in_BroadcastPkts'};
 
       $sql2 = "SELECT ports.id,ports.ifHighSpeed,switches.name, switches.id AS swid, ports.status FROM ports JOIN switches WHERE ports.switch_id = '$switch' AND ports.ifName = '$if_name' AND switches.id = ports.switch_id";
       #print $sql2 ."\n";
@@ -189,8 +234,13 @@ if($port_status != $if_status) {
                        fields => {
                            bytes_recv => $if_in,
                            bytes_sent => $if_out,
+                           out_UcastPkts => $out_UcastPkts,
+                           out_MulticastPkts => $out_MulticastPkts,
+                           out_BroadcastPkts => $out_BroadcastPkts,
+                           in_UcastPkts => $in_UcastPkts,
+                           in_MulticastPkts => $in_MulticastPkts,
+                           in_BroadcastPkts => $in_BroadcastPkts
                        },
-                       time => time()
                    }
                ],
 

@@ -76,6 +76,7 @@ if($last_dhcp_timestamp >= $green) {
 }
 else {
   #Grap the network
+
   $sql = "SELECT * FROM netlist WHERE id = '".$_GET["network"]."'";
 
   $result = mysqli_query($con,$sql);
@@ -83,9 +84,9 @@ else {
     {
       echo "<h2> ".$row["name"]."<small> ".$row["network"]."/".mask2cidr($row["subnet"])." - ".$row["desc"] ."</h2>";
       if($row["dhcp"]) {
-      echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-hour-2.png' alt='dhcp graph'> </div>";
-      echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-day-2.png' alt='dhcp graph'> </div>";
-      echo "<div class='col-md-6'><img class='img-responsive' src='/rrd/dhcp-".$row["id"]."-week-2.png' alt='dhcp graph'> </div>";
+        $start_time = (time() - 3600 * 3) * 1000;
+        $end_time = time() * 1000;
+        echo'<iframe src="http://lcs.area.sdok.no:3000/dashboard-solo/db/dhcp-leases?var-network='.$row["name"].'&panelId=1&theme=light&from='.$start_time.'&to='.$end_time.'" width="100%" height="400" frameborder="0"></iframe>';
       echo "<br/>";
     }
     echo '<table class="table table-striped table-bordered table-hover">';

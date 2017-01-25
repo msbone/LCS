@@ -154,7 +154,7 @@ $distro ->gateway_mikrotik();
   my($retval,@results) = Mtik::mtik_query("/system/package/print", \%attrs, \%queries);
   if($results[0]{version} ne $lcs::config::mtik_version) {
   print "Not correct OS, running: ".$results[0]{version} ."\n";
-  $ftp->put("/lcs/AC/mikrotik-firmware/routeros-mipsbe-6.33.npk", "routeros-mipsbe-6.33.npk") or die "put failed: " . $ftp->message;
+  $ftp->put("/lcs/AC/mikrotik-firmware/routeros-mipsbe-6.37.1.npk", "routeros-mipsbe-6.37.1.npk") or die "put failed: " . $ftp->message;
   print "Uploaded \n"
   }
   else {

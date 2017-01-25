@@ -97,7 +97,7 @@ sub setHostname {
 my $class = shift;
   my %args = @_;
 my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
-my $sql = "SELECT ip,name FROM switches WHERE switches.model = 'mtik'";
+my $sql = "SELECT ip,name FROM switches WHERE switches.model = 'mtik' AND configured = 1";
 my $sth = $dbh->prepare($sql);
   $sth->execute or die "SQL Error: $DBI::errstr\n";
 
@@ -119,7 +119,7 @@ sub setPassword {
 my $class = shift;
   my %args = @_;
 my $dbh = DBI->connect("dbi:mysql:$lcs::config::db_name",$lcs::config::db_username,$lcs::config::db_password) or die "Connection Error: $DBI::errstr\n";
-my $sql = "SELECT ip FROM switches WHERE switches.model = 'mtik'";
+my $sql = "SELECT ip FROM switches WHERE switches.model = 'mtik' AND configured = 1";
 my $sth = $dbh->prepare($sql);
   $sth->execute or die "SQL Error: $DBI::errstr\n";
 

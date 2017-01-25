@@ -8,6 +8,6 @@ use MtikAC;
 
 #MtikAC->create_config();
 #MtikAC->setPassword();
-#MtikAC->setHostname();
+MtikAC->setHostname();
 #MtikAC->checkFirmware();
-MtikAC->getResources();
+#MtikAC->getResources();

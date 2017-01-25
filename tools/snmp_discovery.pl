@@ -130,6 +130,7 @@ if($port_ok == 1) {
         if($sth2->rows == 0) {
           #ADD
           $epoc = time();
+	  if($if_speed == '') {$if_speed = 0;}
           $dbh->do("INSERT INTO `ports` (switch_id,ifName,ifIndex,ifHighSpeed) VALUES ('$switch', '$if_name','$port','$if_speed')");
           syslog->log(message => "Added $if_name($port)",type => "12",priority => "5",from => "sw".$switch);
 
